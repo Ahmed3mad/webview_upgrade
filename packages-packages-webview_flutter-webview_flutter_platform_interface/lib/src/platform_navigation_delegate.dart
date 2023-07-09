@@ -39,7 +39,7 @@ abstract class PlatformNavigationDelegate extends PlatformInterface {
       '`WebViewPlatform.instance` can be set with your own test implementation.',
     );
     final PlatformNavigationDelegate callbackDelegate =
-        WebViewPlatform.instance!.createPlatformNavigationDelegate(params);
+        WebViewPlatform.instance.createPlatformNavigationDelegate(params);
     PlatformInterface.verify(callbackDelegate, _token);
     return callbackDelegate;
   }

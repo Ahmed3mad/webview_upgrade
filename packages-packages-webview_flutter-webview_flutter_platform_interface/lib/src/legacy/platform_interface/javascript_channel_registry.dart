@@ -10,7 +10,7 @@ import '../types/javascript_message.dart';
 class JavascriptChannelRegistry {
   /// Constructs a [JavascriptChannelRegistry] initializing it with the given
   /// set of [JavascriptChannel]s.
-  JavascriptChannelRegistry(Set<JavascriptChannel>? channels) {
+  JavascriptChannelRegistry(Set<JavascriptChannel> channels) {
     updateJavascriptChannelsFromSet(channels);
   }
 
@@ -19,7 +19,7 @@ class JavascriptChannelRegistry {
 
   /// Invoked when a JavaScript channel message is received.
   void onJavascriptChannelMessage(String channel, String message) {
-    final JavascriptChannel? javascriptChannel = channels[channel];
+    final JavascriptChannel javascriptChannel = channels[channel];
 
     if (javascriptChannel == null) {
       throw ArgumentError('No channel registered with name $channel.');
@@ -29,7 +29,7 @@ class JavascriptChannelRegistry {
   }
 
   /// Updates the set of [JavascriptChannel]s with the new set.
-  void updateJavascriptChannelsFromSet(Set<JavascriptChannel>? channels) {
+  void updateJavascriptChannelsFromSet(Set<JavascriptChannel> channels) {
     this.channels.clear();
     if (channels == null) {
       return;

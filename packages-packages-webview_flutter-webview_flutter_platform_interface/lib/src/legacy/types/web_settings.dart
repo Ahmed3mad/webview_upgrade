@@ -25,7 +25,7 @@ class WebSetting<T> {
       : _value = value,
         isPresent = true;
 
-  final T? _value;
+  final T _value;
 
   /// The setting's value.
   ///
@@ -62,7 +62,7 @@ class WebSetting<T> {
   }
 
   @override
-  int get hashCode => Object.hash(_value, isPresent);
+  int get hashCode => _value.hashCode ^ isPresent.hashCode;
 }
 
 /// Settings for configuring a WebViewPlatform.
@@ -84,28 +84,28 @@ class WebSettings {
     this.gestureNavigationEnabled,
     this.allowsInlineMediaPlayback,
     this.zoomEnabled,
-    required this.userAgent,
+    @required this.userAgent,
   }) : assert(userAgent != null);
 
   /// The JavaScript execution mode to be used by the webview.
-  final JavascriptMode? javascriptMode;
+  final JavascriptMode javascriptMode;
 
   /// Whether the [WebView] has a [NavigationDelegate] set.
-  final bool? hasNavigationDelegate;
+  final bool hasNavigationDelegate;
 
   /// Whether the [WebView] should track page loading progress.
   /// See also: [WebViewPlatformCallbacksHandler.onProgress] to get the progress.
-  final bool? hasProgressTracking;
+  final bool hasProgressTracking;
 
   /// Whether to enable the platform's webview content debugging tools.
   ///
   /// See also: [WebView.debuggingEnabled].
-  final bool? debuggingEnabled;
+  final bool debuggingEnabled;
 
   /// Whether to play HTML5 videos inline or use the native full-screen controller on iOS.
   ///
   /// This will have no effect on Android.
-  final bool? allowsInlineMediaPlayback;
+  final bool allowsInlineMediaPlayback;
 
   /// The value used for the HTTP `User-Agent:` request header.
   ///
@@ -115,15 +115,15 @@ class WebSettings {
   /// last time it was set.
   ///
   /// See also [WebView.userAgent].
-  final WebSetting<String?> userAgent;
+  final WebSetting<String> userAgent;
 
   /// Sets whether the WebView should support zooming using its on-screen zoom controls and gestures.
-  final bool? zoomEnabled;
+  final bool zoomEnabled;
 
   /// Whether to allow swipe based navigation in iOS.
   ///
   /// See also: [WebView.gestureNavigationEnabled]
-  final bool? gestureNavigationEnabled;
+  final bool gestureNavigationEnabled;
 
   @override
   String toString() {

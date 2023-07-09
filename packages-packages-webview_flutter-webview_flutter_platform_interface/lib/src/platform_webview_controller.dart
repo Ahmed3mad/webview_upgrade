@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import '../../src/platform_navigation_delegate.dart';
+import 'platform_navigation_delegate.dart';
 import 'webview_platform.dart';
 
 /// Interface for a platform implementation of a web view controller.
@@ -29,7 +29,7 @@ abstract class PlatformWebViewController extends PlatformInterface {
       '`WebViewPlatform.instance` can be set with your own test implementation.',
     );
     final PlatformWebViewController webViewControllerDelegate =
-        WebViewPlatform.instance!.createPlatformWebViewController(params);
+        WebViewPlatform.instance.createPlatformWebViewController(params);
     PlatformInterface.verify(webViewControllerDelegate, _token);
     return webViewControllerDelegate;
   }
@@ -77,7 +77,7 @@ abstract class PlatformWebViewController extends PlatformInterface {
   /// HTML string.
   Future<void> loadHtmlString(
     String html, {
-    String? baseUrl,
+    String baseUrl,
   }) {
     throw UnimplementedError(
         'loadHtmlString is not implemented on the current platform');
@@ -105,7 +105,7 @@ abstract class PlatformWebViewController extends PlatformInterface {
   /// Accessor to the current URL that the WebView is displaying.
   ///
   /// If no URL was ever loaded, returns `null`.
-  Future<String?> currentUrl() {
+  Future<String> currentUrl() {
     throw UnimplementedError(
         'currentUrl is not implemented on the current platform');
   }
@@ -207,7 +207,7 @@ abstract class PlatformWebViewController extends PlatformInterface {
   }
 
   /// Returns the title of the currently loaded page.
-  Future<String?> getTitle() {
+  Future<String> getTitle() {
     throw UnimplementedError(
         'getTitle is not implemented on the current platform');
   }
@@ -255,7 +255,7 @@ abstract class PlatformWebViewController extends PlatformInterface {
   }
 
   /// Sets the value used for the HTTP `User-Agent:` request header.
-  Future<void> setUserAgent(String? userAgent) {
+  Future<void> setUserAgent(String userAgent) {
     throw UnimplementedError(
         'setUserAgent is not implemented on the current platform');
   }
@@ -266,8 +266,8 @@ abstract class PlatformWebViewController extends PlatformInterface {
 class JavaScriptChannelParams {
   /// Creates a new [JavaScriptChannelParams] object.
   const JavaScriptChannelParams({
-    required this.name,
-    required this.onMessageReceived,
+    @required this.name,
+    @required this.onMessageReceived,
   });
 
   /// The name that identifies the JavaScript channel.

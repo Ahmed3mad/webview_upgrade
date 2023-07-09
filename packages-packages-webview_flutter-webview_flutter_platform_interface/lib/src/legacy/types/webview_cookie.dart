@@ -2,14 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
+
 /// A cookie that can be set globally for all web views
 /// using [WebViewCookieManagerPlatform].
 class WebViewCookie {
   /// Constructs a new [WebViewCookie].
   const WebViewCookie(
-      {required this.name,
-      required this.value,
-      required this.domain,
+      {@required this.name,
+      @required this.value,
+      @required this.domain,
       this.path = '/'});
 
   /// The cookie-name of the cookie.

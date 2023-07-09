@@ -57,7 +57,7 @@ abstract class WebViewPlatformController {
   /// HTML string.
   Future<void> loadHtmlString(
     String html, {
-    String? baseUrl,
+    String baseUrl,
   }) {
     throw UnimplementedError(
         'WebView loadHtmlString is not implemented on the current platform');
@@ -73,7 +73,7 @@ abstract class WebViewPlatformController {
   /// Throws an ArgumentError if `url` is not a valid URL string.
   Future<void> loadUrl(
     String url,
-    Map<String, String>? headers,
+    Map<String, String> headers,
   ) {
     throw UnimplementedError(
         'WebView loadUrl is not implemented on the current platform');
@@ -110,7 +110,7 @@ abstract class WebViewPlatformController {
   /// Accessor to the current URL that the WebView is displaying.
   ///
   /// If no URL was ever loaded, returns `null`.
-  Future<String?> currentUrl() {
+  Future<String> currentUrl() {
     throw UnimplementedError(
         'WebView currentUrl is not implemented on the current platform');
   }
@@ -215,7 +215,7 @@ abstract class WebViewPlatformController {
   }
 
   /// Returns the title of the currently loaded page.
-  Future<String?> getTitle() {
+  Future<String> getTitle() {
     throw UnimplementedError(
         'WebView getTitle is not implemented on the current platform');
   }

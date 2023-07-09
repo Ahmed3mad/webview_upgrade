@@ -103,8 +103,8 @@ enum WebResourceErrorType {
 class WebResourceError {
   /// Used by the platform implementation to create a new [WebResourceError].
   const WebResourceError({
-    required this.errorCode,
-    required this.description,
+    @required this.errorCode,
+    @required this.description,
     this.errorType,
     this.isForMainFrame,
   });
@@ -116,8 +116,8 @@ class WebResourceError {
   final String description;
 
   /// The type this error can be categorized as.
-  final WebResourceErrorType? errorType;
+  final WebResourceErrorType errorType;
 
   /// Whether the error originated from the main frame.
-  final bool? isForMainFrame;
+  final bool isForMainFrame;
 }

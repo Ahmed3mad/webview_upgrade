@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
+
 import 'javascript_message.dart';
 
 /// Callback type for handling messages sent from JavaScript running in a web view.
@@ -15,8 +17,8 @@ class JavascriptChannel {
   ///
   /// The parameters `name` and `onMessageReceived` must not be null.
   JavascriptChannel({
-    required this.name,
-    required this.onMessageReceived,
+    @required this.name,
+    @required this.onMessageReceived,
   })  : assert(name != null),
         assert(onMessageReceived != null),
         assert(_validChannelNames.hasMatch(name));

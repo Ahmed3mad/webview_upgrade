@@ -4,6 +4,8 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import '../types/types.dart';
 
 /// Interface for callbacks made by [WebViewPlatformController].
@@ -15,7 +17,7 @@ abstract class WebViewPlatformCallbacksHandler {
   ///
   /// If true is returned the navigation is allowed, otherwise it is blocked.
   FutureOr<bool> onNavigationRequest(
-      {required String url, required bool isForMainFrame});
+      {@required String url, @required bool isForMainFrame});
 
   /// Invoked by [WebViewPlatformController] when a page has started loading.
   void onPageStarted(String url);

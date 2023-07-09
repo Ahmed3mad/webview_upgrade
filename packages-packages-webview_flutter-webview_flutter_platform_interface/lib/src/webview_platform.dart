@@ -4,7 +4,7 @@
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import '../../src/platform_navigation_delegate.dart';
+import 'platform_navigation_delegate.dart';
 import 'platform_webview_controller.dart';
 import 'platform_webview_cookie_manager.dart';
 import 'platform_webview_widget.dart';
@@ -19,14 +19,14 @@ abstract class WebViewPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static WebViewPlatform? _instance;
+  static WebViewPlatform _instance;
 
   /// The instance of [WebViewPlatform] to use.
-  static WebViewPlatform? get instance => _instance;
+  static WebViewPlatform get instance => _instance;
 
   /// Platform-specific plugins should set this with their own platform-specific
   /// class that extends [WebViewPlatform] when they register themselves.
-  static set instance(WebViewPlatform? instance) {
+  static set instance(WebViewPlatform instance) {
     if (instance == null) {
       throw AssertionError(
           'Platform interfaces can only be set to a non-null instance');

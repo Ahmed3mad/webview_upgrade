@@ -28,12 +28,12 @@ class CreationParams {
   /// The initialUrl to load in the webview.
   ///
   /// When null the webview will be created without loading any page.
-  final String? initialUrl;
+  final String initialUrl;
 
   /// The initial [WebSettings] for the new webview.
   ///
   /// This can later be updated with [WebViewPlatformController.updateSettings].
-  final WebSettings? webSettings;
+  final WebSettings webSettings;
 
   /// The initial set of JavaScript channels that are configured for this webview.
   ///
@@ -51,7 +51,7 @@ class CreationParams {
   /// The value used for the HTTP User-Agent: request header.
   ///
   /// When null the platform's webview default is used for the User-Agent header.
-  final String? userAgent;
+  final String userAgent;
 
   /// Which restrictions apply on automatic media playback.
   final AutoMediaPlaybackPolicy autoMediaPlaybackPolicy;
@@ -59,7 +59,7 @@ class CreationParams {
   /// The background color of the webview.
   ///
   /// When null the platform's webview default background color is used.
-  final Color? backgroundColor;
+  final Color backgroundColor;
 
   /// The initial set of cookies to set before the webview does its first load.
   final List<WebViewCookie> cookies;

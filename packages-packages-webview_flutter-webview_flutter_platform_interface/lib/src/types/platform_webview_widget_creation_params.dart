@@ -50,7 +50,7 @@ class PlatformWebViewWidgetCreationParams {
   /// Used by the platform implementation to create a new [PlatformWebViewWidget].
   const PlatformWebViewWidgetCreationParams({
     this.key,
-    required this.controller,
+    @required this.controller,
     this.layoutDirection = TextDirection.ltr,
     this.gestureRecognizers = const <Factory<OneSequenceGestureRecognizer>>{},
   });
@@ -60,7 +60,7 @@ class PlatformWebViewWidgetCreationParams {
   /// See also:
   ///
   ///  * The discussions at [Key] and [GlobalKey].
-  final Key? key;
+  final Key key;
 
   /// The [PlatformWebViewController] that allows controlling the native web
   /// view.

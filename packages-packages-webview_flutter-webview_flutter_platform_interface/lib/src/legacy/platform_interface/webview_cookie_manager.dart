@@ -19,14 +19,14 @@ abstract class WebViewCookieManagerPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static WebViewCookieManagerPlatform? _instance;
+  static WebViewCookieManagerPlatform _instance;
 
   /// The instance of [WebViewCookieManagerPlatform] to use.
-  static WebViewCookieManagerPlatform? get instance => _instance;
+  static WebViewCookieManagerPlatform get instance => _instance;
 
   /// Platform-specific plugins should set this with their own platform-specific
   /// class that extends [WebViewCookieManagerPlatform] when they register themselves.
-  static set instance(WebViewCookieManagerPlatform? instance) {
+  static set instance(WebViewCookieManagerPlatform instance) {
     if (instance == null) {
       throw AssertionError(
           'Platform interfaces can only be set to a non-null instance');

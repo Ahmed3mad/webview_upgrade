@@ -9,9 +9,9 @@ import 'package:flutter/foundation.dart';
 class WebViewCookie {
   /// Creates a new [WebViewCookieDelegate]
   const WebViewCookie({
-    required this.name,
-    required this.value,
-    required this.domain,
+    @required this.name,
+    @required this.value,
+    @required this.domain,
     this.path = '/',
   });
 

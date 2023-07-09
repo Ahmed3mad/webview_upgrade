@@ -43,7 +43,7 @@ import 'package:flutter/foundation.dart';
 class JavaScriptMessage {
   /// Creates a new JavaScript message object.
   const JavaScriptMessage({
-    required this.message,
+    @required this.message,
   });
 
   /// The contents of the message that was sent by the JavaScript code.

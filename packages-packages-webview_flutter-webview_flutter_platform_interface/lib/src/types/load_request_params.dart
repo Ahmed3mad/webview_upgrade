@@ -71,7 +71,7 @@ extension LoadRequestMethodExtensions on LoadRequestMethod {
 class LoadRequestParams {
   /// Used by the platform implementation to create a new [LoadRequestParams].
   const LoadRequestParams({
-    required this.uri,
+    @required this.uri,
     this.method = LoadRequestMethod.get,
     this.headers = const <String, String>{},
     this.body,
@@ -89,5 +89,5 @@ class LoadRequestParams {
   final Map<String, String> headers;
 
   /// HTTP body for the request.
-  final Uint8List? body;
+  final Uint8List body;
 }

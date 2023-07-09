@@ -15,7 +15,7 @@ import 'webview_platform_controller.dart';
 ///
 /// See also the `onWebViewPlatformCreated` argument for [WebViewPlatform.build].
 typedef WebViewPlatformCreatedCallback = void Function(
-    WebViewPlatformController? webViewPlatformController);
+    WebViewPlatformController webViewPlatformController);
 
 /// Interface for a platform implementation of a WebView.
 ///
@@ -45,15 +45,15 @@ abstract class WebViewPlatform {
   ///
   /// `webViewPlatformHandler` must not be null.
   Widget build({
-    required BuildContext context,
+    @required BuildContext context,
     // TODO(amirh): convert this to be the actual parameters.
     // I'm starting without it as the PR is starting to become pretty big.
     // I'll followup with the conversion PR.
-    required CreationParams creationParams,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
-    required JavascriptChannelRegistry javascriptChannelRegistry,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
+    @required CreationParams creationParams,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    @required JavascriptChannelRegistry javascriptChannelRegistry,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   });
 
   /// Clears all cookies for all [WebView] instances.

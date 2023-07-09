@@ -4,6 +4,8 @@
 
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+
 /// Defines the supported HTTP methods for loading a page in [WebView].
 enum WebViewRequestMethod {
   /// HTTP GET method.
@@ -30,8 +32,8 @@ extension WebViewRequestMethodExtensions on WebViewRequestMethod {
 class WebViewRequest {
   /// Creates the [WebViewRequest].
   WebViewRequest({
-    required this.uri,
-    required this.method,
+    @required this.uri,
+    @required this.method,
     this.headers = const <String, String>{},
     this.body,
   });
@@ -46,7 +48,7 @@ class WebViewRequest {
   final Map<String, String> headers;
 
   /// HTTP body for the request.
-  final Uint8List? body;
+  final Uint8List body;
 
   /// Serializes the [WebViewRequest] to JSON.
   Map<String, dynamic> toJson() => <String, dynamic>{

@@ -27,7 +27,7 @@ abstract class PlatformWebViewCookieManager extends PlatformInterface {
       '`WebViewPlatform.instance` can be set with your own test implementation.',
     );
     final PlatformWebViewCookieManager cookieManagerDelegate =
-        WebViewPlatform.instance!.createPlatformCookieManager(params);
+        WebViewPlatform.instance.createPlatformCookieManager(params);
     PlatformInterface.verify(cookieManagerDelegate, _token);
     return cookieManagerDelegate;
   }
