@@ -134,7 +134,7 @@ class WKErrorCode {
 @immutable
 class WKWebsiteDataRecord {
   /// Constructs a [WKWebsiteDataRecord].
-  const WKWebsiteDataRecord({required this.displayName});
+  const WKWebsiteDataRecord({@required this.displayName});
 
   /// Identifying information that you display to users.
   final String displayName;
@@ -147,9 +147,9 @@ class WKWebsiteDataRecord {
 class WKNavigationAction {
   /// Constructs a [WKNavigationAction].
   const WKNavigationAction({
-    required this.request,
-    required this.targetFrame,
-    required this.navigationType,
+    @required this.request,
+    @required this.targetFrame,
+    @required this.navigationType,
   });
 
   /// The URL request object associated with the navigation action.
@@ -171,7 +171,7 @@ class WKNavigationAction {
 @immutable
 class WKFrameInfo {
   /// Construct a [WKFrameInfo].
-  const WKFrameInfo({required this.isMainFrame});
+  const WKFrameInfo({@required this.isMainFrame});
 
   /// Indicates whether the frame is the web site's main frame or a subframe.
   final bool isMainFrame;
@@ -186,7 +186,7 @@ class WKUserScript {
   const WKUserScript(
     this.source,
     this.injectionTime, {
-    required this.isMainFrameOnly,
+    @required this.isMainFrameOnly,
   });
 
   /// The script’s source code.
@@ -205,7 +205,7 @@ class WKUserScript {
 @immutable
 class WKScriptMessage {
   /// Constructs a [WKScriptMessage].
-  const WKScriptMessage({required this.name, this.body});
+  const WKScriptMessage({@required this.name, this.body});
 
   /// The name of the message handler to which the message is sent.
   final String name;
@@ -213,7 +213,7 @@ class WKScriptMessage {
   /// The body of the message.
   ///
   /// Allowed types are [num], [String], [List], [Map], and `null`.
-  final Object? body;
+  final Object body;
 }
 
 /// Encapsulates the standard behaviors to apply to websites.
@@ -224,8 +224,8 @@ class WKPreferences extends NSObject {
   /// Constructs a [WKPreferences] that is owned by [configuration].
   factory WKPreferences.fromWebViewConfiguration(
     WKWebViewConfiguration configuration, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
     final WKPreferences preferences = WKPreferences.detached(
       binaryMessenger: binaryMessenger,
@@ -244,14 +244,18 @@ class WKPreferences extends NSObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   WKPreferences.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _preferencesApi = WKPreferencesHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKPreferencesHostApiImpl _preferencesApi;
 
@@ -284,14 +288,18 @@ class WKWebsiteDataStore extends NSObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   WKWebsiteDataStore.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _websiteDataStoreApi = WKWebsiteDataStoreHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   factory WKWebsiteDataStore._defaultDataStore() {
     final WKWebsiteDataStore websiteDataStore = WKWebsiteDataStore.detached();
@@ -304,15 +312,14 @@ class WKWebsiteDataStore extends NSObject {
   /// Constructs a [WKWebsiteDataStore] that is owned by [configuration].
   factory WKWebsiteDataStore.fromWebViewConfiguration(
     WKWebViewConfiguration configuration, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
     final WKWebsiteDataStore websiteDataStore = WKWebsiteDataStore.detached(
       binaryMessenger: binaryMessenger,
       instanceManager: instanceManager,
     );
-    websiteDataStore._websiteDataStoreApi
-        .createFromWebViewConfigurationForInstances(
+    websiteDataStore._websiteDataStoreApi.createFromWebViewConfigurationForInstances(
       websiteDataStore,
       configuration,
     );
@@ -320,14 +327,14 @@ class WKWebsiteDataStore extends NSObject {
   }
 
   /// Default data store that stores data persistently to disk.
-  static final WKWebsiteDataStore defaultDataStore =
-      WKWebsiteDataStore._defaultDataStore();
+  static final WKWebsiteDataStore defaultDataStore = WKWebsiteDataStore._defaultDataStore();
 
   final WKWebsiteDataStoreHostApiImpl _websiteDataStoreApi;
 
   /// Manages the HTTP cookies associated with a particular web view.
-  late final WKHttpCookieStore httpCookieStore =
-      WKHttpCookieStore.fromWebsiteDataStore(this);
+  WKHttpCookieStore _httpCookieStore;
+
+  WKHttpCookieStore get httpCookieStore => _httpCookieStore ??= WKHttpCookieStore.fromWebsiteDataStore(this);
 
   /// Removes website data that changed after the specified date.
   ///
@@ -364,20 +371,24 @@ class WKHttpCookieStore extends NSObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   WKHttpCookieStore.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _httpCookieStoreApi = WKHttpCookieStoreHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   /// Constructs a [WKHttpCookieStore] that is owned by [dataStore].
   factory WKHttpCookieStore.fromWebsiteDataStore(
     WKWebsiteDataStore dataStore, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
     final WKHttpCookieStore cookieStore = WKHttpCookieStore.detached(
       binaryMessenger: binaryMessenger,
@@ -414,15 +425,19 @@ class WKHttpCookieStore extends NSObject {
 class WKScriptMessageHandler extends NSObject {
   /// Constructs a [WKScriptMessageHandler].
   WKScriptMessageHandler({
-    required this.didReceiveScriptMessage,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    @required this.didReceiveScriptMessage,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _scriptMessageHandlerApi = WKScriptMessageHandlerHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached() {
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     // Ensures FlutterApis for the WebKit library are set up.
     WebKitFlutterApis.instance.ensureSetUp();
     _scriptMessageHandlerApi.createForInstances(this);
@@ -434,15 +449,19 @@ class WKScriptMessageHandler extends NSObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   WKScriptMessageHandler.detached({
-    required this.didReceiveScriptMessage,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    @required this.didReceiveScriptMessage,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _scriptMessageHandlerApi = WKScriptMessageHandlerHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKScriptMessageHandlerHostApiImpl _scriptMessageHandlerApi;
 
@@ -483,16 +502,14 @@ class WKUserContentController extends NSObject {
   /// Constructs a [WKUserContentController] that is owned by [configuration].
   factory WKUserContentController.fromWebViewConfiguration(
     WKWebViewConfiguration configuration, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
-    final WKUserContentController userContentController =
-        WKUserContentController.detached(
+    final WKUserContentController userContentController = WKUserContentController.detached(
       binaryMessenger: binaryMessenger,
       instanceManager: instanceManager,
     );
-    userContentController._userContentControllerApi
-        .createFromWebViewConfigurationForInstances(
+    userContentController._userContentControllerApi.createFromWebViewConfigurationForInstances(
       userContentController,
       configuration,
     );
@@ -505,14 +522,18 @@ class WKUserContentController extends NSObject {
   /// This should only be used outside of tests by subclasses created by this
   /// library or to create a copy for an InstanceManager.
   WKUserContentController.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _userContentControllerApi = WKUserContentControllerHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKUserContentControllerHostApiImpl _userContentControllerApi;
 
@@ -567,8 +588,7 @@ class WKUserContentController extends NSObject {
 
   /// Injects the specified script into the webpage’s content.
   Future<void> addUserScript(WKUserScript userScript) {
-    return _userContentControllerApi.addUserScriptForInstances(
-        this, userScript);
+    return _userContentControllerApi.addUserScriptForInstances(this, userScript);
   }
 
   /// Removes all user scripts from the web view.
@@ -593,14 +613,18 @@ class WKUserContentController extends NSObject {
 class WKWebViewConfiguration extends NSObject {
   /// Constructs a [WKWebViewConfiguration].
   WKWebViewConfiguration({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _webViewConfigurationApi = WKWebViewConfigurationHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached() {
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     // Ensures FlutterApis for the WebKit library are set up.
     WebKitFlutterApis.instance.ensureSetUp();
     _webViewConfigurationApi.createForInstances(this);
@@ -610,11 +634,10 @@ class WKWebViewConfiguration extends NSObject {
   @visibleForTesting
   factory WKWebViewConfiguration.fromWebView(
     WKWebView webView, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
-    final WKWebViewConfiguration configuration =
-        WKWebViewConfiguration.detached(
+    final WKWebViewConfiguration configuration = WKWebViewConfiguration.detached(
       binaryMessenger: binaryMessenger,
       instanceManager: instanceManager,
     );
@@ -631,27 +654,32 @@ class WKWebViewConfiguration extends NSObject {
   /// This should only be used outside of tests by subclasses created by this
   /// library or to create a copy for an InstanceManager.
   WKWebViewConfiguration.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _webViewConfigurationApi = WKWebViewConfigurationHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
-  late final WKWebViewConfigurationHostApiImpl _webViewConfigurationApi;
+  final WKWebViewConfigurationHostApiImpl _webViewConfigurationApi;
 
   /// Coordinates interactions between your app’s code and the webpage’s scripts and other content.
-  late final WKUserContentController userContentController =
-      WKUserContentController.fromWebViewConfiguration(
+  WKUserContentController _userContentController;
+  WKUserContentController get userContentController => _userContentController ??= WKUserContentController.fromWebViewConfiguration(
     this,
     binaryMessenger: _webViewConfigurationApi.binaryMessenger,
     instanceManager: _webViewConfigurationApi.instanceManager,
   );
 
   /// Manages the preference-related settings for the web view.
-  late final WKPreferences preferences = WKPreferences.fromWebViewConfiguration(
+  WKPreferences _preferences;
+  WKPreferences get preferences => _preferences ??= WKPreferences.fromWebViewConfiguration(
     this,
     binaryMessenger: _webViewConfigurationApi.binaryMessenger,
     instanceManager: _webViewConfigurationApi.instanceManager,
@@ -660,8 +688,8 @@ class WKWebViewConfiguration extends NSObject {
   /// Used to get and set the site’s cookies and to track the cached data objects.
   ///
   /// Represents [WKWebViewConfiguration.webSiteDataStore](https://developer.apple.com/documentation/webkit/wkwebviewconfiguration/1395661-websitedatastore?language=objc).
-  late final WKWebsiteDataStore websiteDataStore =
-      WKWebsiteDataStore.fromWebViewConfiguration(
+  WKWebsiteDataStore _websiteDataStore;
+  WKWebsiteDataStore get websiteDataStore => _websiteDataStore ??= WKWebsiteDataStore.fromWebViewConfiguration(
     this,
     binaryMessenger: _webViewConfigurationApi.binaryMessenger,
     instanceManager: _webViewConfigurationApi.instanceManager,
@@ -687,8 +715,7 @@ class WKWebViewConfiguration extends NSObject {
     Set<WKAudiovisualMediaType> types,
   ) {
     assert(types.isNotEmpty);
-    return _webViewConfigurationApi
-        .setMediaTypesRequiringUserActionForPlaybackForInstances(
+    return _webViewConfigurationApi.setMediaTypesRequiringUserActionForPlaybackForInstances(
       this,
       types,
     );
@@ -712,14 +739,18 @@ class WKUIDelegate extends NSObject {
   /// Constructs a [WKUIDelegate].
   WKUIDelegate({
     this.onCreateWebView,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _uiDelegateApi = WKUIDelegateHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached() {
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     // Ensures FlutterApis for the WebKit library are set up.
     WebKitFlutterApis.instance.ensureSetUp();
     _uiDelegateApi.createForInstances(this);
@@ -732,14 +763,18 @@ class WKUIDelegate extends NSObject {
   /// create copies.
   WKUIDelegate.detached({
     this.onCreateWebView,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _uiDelegateApi = WKUIDelegateHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKUIDelegateHostApiImpl _uiDelegateApi;
 
@@ -750,7 +785,7 @@ class WKUIDelegate extends NSObject {
     WKWebView webView,
     WKWebViewConfiguration configuration,
     WKNavigationAction navigationAction,
-  )? onCreateWebView;
+  ) onCreateWebView;
 
   @override
   WKUIDelegate copy() {
@@ -779,14 +814,18 @@ class WKNavigationDelegate extends NSObject {
     this.didFailNavigation,
     this.didFailProvisionalNavigation,
     this.webViewWebContentProcessDidTerminate,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _navigationDelegateApi = WKNavigationDelegateHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached() {
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     // Ensures FlutterApis for the WebKit library are set up.
     WebKitFlutterApis.instance.ensureSetUp();
     _navigationDelegateApi.createForInstances(this);
@@ -804,27 +843,30 @@ class WKNavigationDelegate extends NSObject {
     this.didFailNavigation,
     this.didFailProvisionalNavigation,
     this.webViewWebContentProcessDidTerminate,
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _navigationDelegateApi = WKNavigationDelegateHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKNavigationDelegateHostApiImpl _navigationDelegateApi;
 
   /// Called when navigation is complete.
   ///
   /// {@macro webview_flutter_wkwebview.foundation.callbacks}
-  final void Function(WKWebView webView, String? url)? didFinishNavigation;
+  final void Function(WKWebView webView, String url) didFinishNavigation;
 
   /// Called when navigation from the main frame has started.
   ///
   /// {@macro webview_flutter_wkwebview.foundation.callbacks}
-  final void Function(WKWebView webView, String? url)?
-      didStartProvisionalNavigation;
+  final void Function(WKWebView webView, String url) didStartProvisionalNavigation;
 
   /// Called when permission is needed to navigate to new content.
   ///
@@ -832,23 +874,22 @@ class WKNavigationDelegate extends NSObject {
   final Future<WKNavigationActionPolicy> Function(
     WKWebView webView,
     WKNavigationAction navigationAction,
-  )? decidePolicyForNavigationAction;
+  ) decidePolicyForNavigationAction;
 
   /// Called when an error occurred during navigation.
   ///
   /// {@macro webview_flutter_wkwebview.foundation.callbacks}
-  final void Function(WKWebView webView, NSError error)? didFailNavigation;
+  final void Function(WKWebView webView, NSError error) didFailNavigation;
 
   /// Called when an error occurred during the early navigation process.
   ///
   /// {@macro webview_flutter_wkwebview.foundation.callbacks}
-  final void Function(WKWebView webView, NSError error)?
-      didFailProvisionalNavigation;
+  final void Function(WKWebView webView, NSError error) didFailProvisionalNavigation;
 
   /// Called when the web view’s content process was terminated.
   ///
   /// {@macro webview_flutter_wkwebview.foundation.callbacks}
-  final void Function(WKWebView webView)? webViewWebContentProcessDidTerminate;
+  final void Function(WKWebView webView) webViewWebContentProcessDidTerminate;
 
   @override
   WKNavigationDelegate copy() {
@@ -858,8 +899,7 @@ class WKNavigationDelegate extends NSObject {
       decidePolicyForNavigationAction: decidePolicyForNavigationAction,
       didFailNavigation: didFailNavigation,
       didFailProvisionalNavigation: didFailProvisionalNavigation,
-      webViewWebContentProcessDidTerminate:
-          webViewWebContentProcessDidTerminate,
+      webViewWebContentProcessDidTerminate: webViewWebContentProcessDidTerminate,
       observeValue: observeValue,
       binaryMessenger: _navigationDelegateApi.binaryMessenger,
       instanceManager: _navigationDelegateApi.instanceManager,
@@ -883,14 +923,18 @@ class WKWebView extends UIView {
   /// configuration object.
   WKWebView(
     WKWebViewConfiguration configuration, {
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _webViewApi = WKWebViewHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached() {
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     // Ensures FlutterApis for the WebKit library are set up.
     WebKitFlutterApis.instance.ensureSetUp();
     _webViewApi.createForInstances(this, configuration);
@@ -902,14 +946,18 @@ class WKWebView extends UIView {
   /// This should only be used outside of tests by subclasses created by this
   /// library or to create a copy for an InstanceManager.
   WKWebView.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _webViewApi = WKWebViewHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final WKWebViewHostApiImpl _webViewApi;
 
@@ -922,38 +970,41 @@ class WKWebView extends UIView {
   ///
   /// If you didn’t create your web view with a [WKWebViewConfiguration] this
   /// property contains a default configuration object.
-  late final WKWebViewConfiguration configuration =
-      WKWebViewConfiguration.fromWebView(
-    this,
-    binaryMessenger: _webViewApi.binaryMessenger,
-    instanceManager: _webViewApi.instanceManager,
-  );
+  WKWebViewConfiguration _configuration;
+
+  WKWebViewConfiguration get configuration => _configuration ??= WKWebViewConfiguration.fromWebView(
+        this,
+        binaryMessenger: _webViewApi.binaryMessenger,
+        instanceManager: _webViewApi.instanceManager,
+      );
 
   /// The scrollable view associated with the web view.
-  late final UIScrollView scrollView = UIScrollView.fromWebView(
-    this,
-    binaryMessenger: _webViewApi.binaryMessenger,
-    instanceManager: _webViewApi.instanceManager,
-  );
+  UIScrollView _scrollView;
+
+  UIScrollView get scrollView => _scrollView ??= UIScrollView.fromWebView(
+        this,
+        binaryMessenger: _webViewApi.binaryMessenger,
+        instanceManager: _webViewApi.instanceManager,
+      );
 
   /// Used to integrate custom user interface elements into web view interactions.
   ///
   /// Sets [WKWebView.UIDelegate](https://developer.apple.com/documentation/webkit/wkwebview/1415009-uidelegate?language=objc).
-  Future<void> setUIDelegate(WKUIDelegate? delegate) {
+  Future<void> setUIDelegate(WKUIDelegate delegate) {
     return _webViewApi.setUIDelegateForInstances(this, delegate);
   }
 
   /// The object you use to manage navigation behavior for the web view.
   ///
   /// Sets [WKWebView.navigationDelegate](https://developer.apple.com/documentation/webkit/wkwebview/1414971-navigationdelegate?language=objc).
-  Future<void> setNavigationDelegate(WKNavigationDelegate? delegate) {
+  Future<void> setNavigationDelegate(WKNavigationDelegate delegate) {
     return _webViewApi.setNavigationDelegateForInstances(this, delegate);
   }
 
   /// The URL for the current webpage.
   ///
   /// Represents [WKWebView.URL](https://developer.apple.com/documentation/webkit/wkwebview/1415005-url?language=objc).
-  Future<String?> getUrl() {
+  Future<String> getUrl() {
     return _webViewApi.getUrlForInstances(this);
   }
 
@@ -975,12 +1026,12 @@ class WKWebView extends UIView {
   }
 
   /// Loads the contents of the specified HTML string and navigates to it.
-  Future<void> loadHtmlString(String string, {String? baseUrl}) {
+  Future<void> loadHtmlString(String string, {String baseUrl}) {
     return _webViewApi.loadHtmlStringForInstances(this, string, baseUrl);
   }
 
   /// Loads the web content from the specified file and navigates to it.
-  Future<void> loadFileUrl(String url, {required String readAccessUrl}) {
+  Future<void> loadFileUrl(String url, {@required String readAccessUrl}) {
     return _webViewApi.loadFileUrlForInstances(this, url, readAccessUrl);
   }
 
@@ -1020,7 +1071,7 @@ class WKWebView extends UIView {
   /// The page title.
   ///
   /// Represents [WKWebView.title](https://developer.apple.com/documentation/webkit/wkwebview/1415015-title?language=objc).
-  Future<String?> getTitle() {
+  Future<String> getTitle() {
     return _webViewApi.getTitleForInstances(this);
   }
 
@@ -1041,7 +1092,7 @@ class WKWebView extends UIView {
   /// The default value of this property is null.
   ///
   /// Sets [WKWebView.customUserAgent](https://developer.apple.com/documentation/webkit/wkwebview/1414950-customuseragent?language=objc).
-  Future<void> setCustomUserAgent(String? userAgent) {
+  Future<void> setCustomUserAgent(String userAgent) {
     return _webViewApi.setCustomUserAgentForInstances(this, userAgent);
   }
 
@@ -1049,7 +1100,7 @@ class WKWebView extends UIView {
   ///
   /// Throws a `PlatformException` if an error occurs or return value is not
   /// supported.
-  Future<Object?> evaluateJavaScript(String javaScriptString) {
+  Future<Object> evaluateJavaScript(String javaScriptString) {
     return _webViewApi.evaluateJavaScriptForInstances(
       this,
       javaScriptString,

@@ -16,7 +16,7 @@ Iterable<NSKeyValueObservingOptionsEnumData>
   return options.map<NSKeyValueObservingOptionsEnumData>((
     NSKeyValueObservingOptions option,
   ) {
-    late final NSKeyValueObservingOptionsEnum? value;
+    NSKeyValueObservingOptionsEnum value;
     switch (option) {
       case NSKeyValueObservingOptions.newValue:
         value = NSKeyValueObservingOptionsEnum.newValue;
@@ -39,7 +39,7 @@ Iterable<NSKeyValueObservingOptionsEnumData>
 extension _NSKeyValueChangeKeyEnumDataConverter on NSKeyValueChangeKeyEnumData {
   NSKeyValueChangeKey toNSKeyValueChangeKey() {
     return NSKeyValueChangeKey.values.firstWhere(
-      (NSKeyValueChangeKey element) => element.name == value.name,
+      (NSKeyValueChangeKey element) => element.toString().split('.').last.toString() == value.toString().split('.').last.toString(),
     );
   }
 }
@@ -49,8 +49,8 @@ class FoundationFlutterApis {
   /// Constructs a [FoundationFlutterApis].
   @visibleForTesting
   FoundationFlutterApis({
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _binaryMessenger = binaryMessenger,
         object = NSObjectFlutterApiImpl(
           instanceManager: instanceManager,
@@ -69,7 +69,7 @@ class FoundationFlutterApis {
     return _instance;
   }
 
-  final BinaryMessenger? _binaryMessenger;
+  final BinaryMessenger _binaryMessenger;
   bool _hasBeenSetUp = false;
 
   /// Flutter Api for [NSObject].
@@ -93,7 +93,7 @@ class NSObjectHostApiImpl extends NSObjectHostApi {
   /// Constructs an [NSObjectHostApiImpl].
   NSObjectHostApiImpl({
     this.binaryMessenger,
-    InstanceManager? instanceManager,
+    InstanceManager instanceManager,
   })  : instanceManager = instanceManager ?? NSObject.globalInstanceManager,
         super(binaryMessenger: binaryMessenger);
 
@@ -101,7 +101,7 @@ class NSObjectHostApiImpl extends NSObjectHostApi {
   ///
   /// If it is null, the default BinaryMessenger will be used which routes to
   /// the host platform.
-  final BinaryMessenger? binaryMessenger;
+  final BinaryMessenger binaryMessenger;
 
   /// Maintains instances stored to communicate with Objective-C objects.
   final InstanceManager instanceManager;
@@ -114,8 +114,8 @@ class NSObjectHostApiImpl extends NSObjectHostApi {
     Set<NSKeyValueObservingOptions> options,
   ) {
     return addObserver(
-      instanceManager.getIdentifier(instance)!,
-      instanceManager.getIdentifier(observer)!,
+      instanceManager.getIdentifier(instance),
+      instanceManager.getIdentifier(observer),
       keyPath,
       _toNSKeyValueObservingOptionsEnumData(options).toList(),
     );
@@ -128,8 +128,8 @@ class NSObjectHostApiImpl extends NSObjectHostApi {
     String keyPath,
   ) {
     return removeObserver(
-      instanceManager.getIdentifier(instance)!,
-      instanceManager.getIdentifier(observer)!,
+      instanceManager.getIdentifier(instance),
+      instanceManager.getIdentifier(observer),
       keyPath,
     );
   }
@@ -138,14 +138,14 @@ class NSObjectHostApiImpl extends NSObjectHostApi {
 /// Flutter api implementation for [NSObject].
 class NSObjectFlutterApiImpl extends NSObjectFlutterApi {
   /// Constructs a [NSObjectFlutterApiImpl].
-  NSObjectFlutterApiImpl({InstanceManager? instanceManager})
+  NSObjectFlutterApiImpl({InstanceManager instanceManager})
       : instanceManager = instanceManager ?? NSObject.globalInstanceManager;
 
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
 
   NSObject _getObject(int identifier) {
-    return instanceManager.getInstanceWithWeakReference(identifier)!;
+    return instanceManager.getInstanceWithWeakReference(identifier);
   }
 
   @override
@@ -153,19 +153,19 @@ class NSObjectFlutterApiImpl extends NSObjectFlutterApi {
     int identifier,
     String keyPath,
     int objectIdentifier,
-    List<NSKeyValueChangeKeyEnumData?> changeKeys,
-    List<Object?> changeValues,
+    List<NSKeyValueChangeKeyEnumData> changeKeys,
+    List<Object> changeValues,
   ) {
-    final void Function(String, NSObject, Map<NSKeyValueChangeKey, Object?>)?
+    final void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>)
         function = _getObject(identifier).observeValue;
     function?.call(
       keyPath,
-      instanceManager.getInstanceWithWeakReference(objectIdentifier)!
+      instanceManager.getInstanceWithWeakReference(objectIdentifier)
           as NSObject,
-      Map<NSKeyValueChangeKey, Object?>.fromIterables(
+      Map<NSKeyValueChangeKey, Object>.fromIterables(
           changeKeys.map<NSKeyValueChangeKey>(
-        (NSKeyValueChangeKeyEnumData? data) {
-          return data!.toNSKeyValueChangeKey();
+        (NSKeyValueChangeKeyEnumData data) {
+          return data.toNSKeyValueChangeKey();
         },
       ), changeValues),
     );

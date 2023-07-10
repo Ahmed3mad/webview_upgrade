@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+
 // TODO(a14n): remove this import once Flutter 3.1 or later reaches stable (including flutter/flutter#106316)
 // ignore: unnecessary_import
 import 'package:flutter/painting.dart' show Color;
@@ -23,8 +24,8 @@ class UIScrollView extends UIView {
   /// Constructs a [UIScrollView] that is owned by [webView].
   factory UIScrollView.fromWebView(
     WKWebView webView, {
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) {
     final UIScrollView scrollView = UIScrollView.detached(
       binaryMessenger: binaryMessenger,
@@ -43,14 +44,18 @@ class UIScrollView extends UIView {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   UIScrollView.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _scrollViewApi = UIScrollViewHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final UIScrollViewHostApiImpl _scrollViewApi;
 
@@ -99,14 +104,18 @@ class UIView extends NSObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   UIView.detached({
-    super.observeValue,
-    super.binaryMessenger,
-    super.instanceManager,
+    void Function(String, NSObject, Map<NSKeyValueChangeKey, Object>) observeValue,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   })  : _viewApi = UIViewHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          observeValue: observeValue,
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final UIViewHostApiImpl _viewApi;
 
@@ -115,7 +124,7 @@ class UIView extends NSObject {
   /// The default value is null, which results in a transparent background color.
   ///
   /// Sets [UIView.backgroundColor](https://developer.apple.com/documentation/uikit/uiview/1622591-backgroundcolor?language=objc).
-  Future<void> setBackgroundColor(Color? color) {
+  Future<void> setBackgroundColor(Color color) {
     return _viewApi.setBackgroundColorForInstances(this, color);
   }
 

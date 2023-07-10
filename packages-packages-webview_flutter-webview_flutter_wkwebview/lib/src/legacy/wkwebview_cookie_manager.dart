@@ -11,7 +11,7 @@ import '../web_kit/web_kit.dart';
 /// Handles all cookie operations for the WebView platform.
 class WKWebViewCookieManager extends WebViewCookieManagerPlatform {
   /// Constructs a [WKWebViewCookieManager].
-  WKWebViewCookieManager({WKWebsiteDataStore? websiteDataStore})
+  WKWebViewCookieManager({WKWebsiteDataStore websiteDataStore})
       : websiteDataStore =
             websiteDataStore ?? WKWebsiteDataStore.defaultDataStore;
 

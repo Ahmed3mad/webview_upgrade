@@ -14,7 +14,7 @@ class WebKitWebViewCookieManagerCreationParams
     extends PlatformWebViewCookieManagerCreationParams {
   /// Constructs a [WebKitWebViewCookieManagerCreationParams].
   WebKitWebViewCookieManagerCreationParams({
-    WebKitProxy? webKitProxy,
+    WebKitProxy webKitProxy,
   }) : webKitProxy = webKitProxy ?? const WebKitProxy();
 
   /// Constructs a [WebKitWebViewCookieManagerCreationParams] using a
@@ -23,7 +23,7 @@ class WebKitWebViewCookieManagerCreationParams
     // Recommended placeholder to prevent being broken by platform interface.
     // ignore: avoid_unused_constructor_parameters
     PlatformWebViewCookieManagerCreationParams params, {
-    @visibleForTesting WebKitProxy? webKitProxy,
+    @visibleForTesting WebKitProxy webKitProxy,
   }) : this(webKitProxy: webKitProxy);
 
   /// Handles constructing objects and calling static methods for the WebKit
@@ -32,8 +32,8 @@ class WebKitWebViewCookieManagerCreationParams
   final WebKitProxy webKitProxy;
 
   /// Manages stored data for [WKWebView]s.
-  late final WKWebsiteDataStore _websiteDataStore =
-      webKitProxy.defaultWebsiteDataStore();
+  WKWebsiteDataStore __websiteDataStore;
+  WKWebsiteDataStore get _websiteDataStore => __websiteDataStore ??= webKitProxy.defaultWebsiteDataStore();
 }
 
 /// An implementation of [PlatformWebViewCookieManager] with the WebKit api.

@@ -37,7 +37,7 @@ mixin Copyable {
 /// returned by the host platform.
 class InstanceManager {
   /// Constructs an [InstanceManager].
-  InstanceManager({required void Function(int) onWeakReferenceRemoved}) {
+  InstanceManager({@required void Function(int) onWeakReferenceRemoved}) {
     this.onWeakReferenceRemoved = (int identifier) {
       _weakInstances.remove(identifier);
       onWeakReferenceRemoved(identifier);
@@ -63,12 +63,12 @@ class InstanceManager {
   final Map<int, WeakReference<Copyable>> _weakInstances =
       <int, WeakReference<Copyable>>{};
   final Map<int, Copyable> _strongInstances = <int, Copyable>{};
-  late final Finalizer<int> _finalizer;
+  Finalizer<int> _finalizer;
   int _nextIdentifier = 0;
 
   /// Called when a weak referenced instance is removed by [removeWeakReference]
   /// or becomes inaccessible.
-  late final void Function(int) onWeakReferenceRemoved;
+  void Function(int) onWeakReferenceRemoved;
 
   /// Adds a new instance that was instantiated by Dart.
   ///
@@ -94,8 +94,8 @@ class InstanceManager {
   ///
   /// This does not remove the the strong referenced instance associated with
   /// [instance]. This can be done with [remove].
-  int? removeWeakReference(Copyable instance) {
-    final int? identifier = getIdentifier(instance);
+  int removeWeakReference(Copyable instance) {
+    final int identifier = getIdentifier(instance);
     if (identifier == null) {
       return null;
     }
@@ -116,8 +116,8 @@ class InstanceManager {
   ///
   /// This does not remove the the weak referenced instance associtated with
   /// [identifier]. This can be done with [removeWeakReference].
-  T? remove<T extends Copyable>(int identifier) {
-    return _strongInstances.remove(identifier) as T?;
+  T remove<T extends Copyable>(int identifier) {
+    return _strongInstances.remove(identifier) as T;
   }
 
   /// Retrieves the instance associated with identifier.
@@ -132,11 +132,11 @@ class InstanceManager {
   ///
   /// This method also expects the host `InstanceManager` to have a strong
   /// reference to the instance the identifier is associated with.
-  T? getInstanceWithWeakReference<T extends Copyable>(int identifier) {
-    final Copyable? weakInstance = _weakInstances[identifier]?.target;
+  T getInstanceWithWeakReference<T extends Copyable>(int identifier) {
+    final Copyable weakInstance = _weakInstances[identifier]?.target;
 
     if (weakInstance == null) {
-      final Copyable? strongInstance = _strongInstances[identifier];
+      final Copyable strongInstance = _strongInstances[identifier];
       if (strongInstance != null) {
         final Copyable copy = strongInstance.copy();
         _identifiers[copy] = identifier;
@@ -144,14 +144,14 @@ class InstanceManager {
         _finalizer.attach(copy, identifier, detach: copy);
         return copy as T;
       }
-      return strongInstance as T?;
+      return strongInstance as T;
     }
 
     return weakInstance as T;
   }
 
   /// Retrieves the identifier associated with instance.
-  int? getIdentifier(Copyable instance) {
+  int getIdentifier(Copyable instance) {
     return _identifiers[instance];
   }
 
@@ -188,7 +188,7 @@ class InstanceManager {
   }
 
   int _nextUniqueIdentifier() {
-    late int identifier;
+    int identifier;
     do {
       identifier = _nextIdentifier;
       _nextIdentifier = (_nextIdentifier + 1) % _maxDartCreatedIdentifier;

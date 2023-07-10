@@ -21,7 +21,7 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
   /// Constructs a [UIScrollViewHostApiImpl].
   UIScrollViewHostApiImpl({
     this.binaryMessenger,
-    InstanceManager? instanceManager,
+    InstanceManager instanceManager,
   })  : instanceManager = instanceManager ?? NSObject.globalInstanceManager,
         super(binaryMessenger: binaryMessenger);
 
@@ -29,7 +29,7 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
   ///
   /// If it is null, the default BinaryMessenger will be used which routes to
   /// the host platform.
-  final BinaryMessenger? binaryMessenger;
+  final BinaryMessenger binaryMessenger;
 
   /// Maintains instances stored to communicate with Objective-C objects.
   final InstanceManager instanceManager;
@@ -41,7 +41,7 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
   ) {
     return createFromWebView(
       instanceManager.addDartCreatedInstance(instance),
-      instanceManager.getIdentifier(webView)!,
+      instanceManager.getIdentifier(webView),
     );
   }
 
@@ -49,10 +49,10 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
   Future<Point<double>> getContentOffsetForInstances(
     UIScrollView instance,
   ) async {
-    final List<double?> point = await getContentOffset(
-      instanceManager.getIdentifier(instance)!,
+    final List<double> point = await getContentOffset(
+      instanceManager.getIdentifier(instance),
     );
-    return Point<double>(point[0]!, point[1]!);
+    return Point<double>(point[0], point[1]);
   }
 
   /// Calls [scrollBy] with the ids of the provided object instances.
@@ -61,7 +61,7 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
     Point<double> offset,
   ) {
     return scrollBy(
-      instanceManager.getIdentifier(instance)!,
+      instanceManager.getIdentifier(instance),
       offset.x,
       offset.y,
     );
@@ -73,7 +73,7 @@ class UIScrollViewHostApiImpl extends UIScrollViewHostApi {
     Point<double> offset,
   ) async {
     return setContentOffset(
-      instanceManager.getIdentifier(instance)!,
+      instanceManager.getIdentifier(instance),
       offset.x,
       offset.y,
     );
@@ -85,7 +85,7 @@ class UIViewHostApiImpl extends UIViewHostApi {
   /// Constructs a [UIViewHostApiImpl].
   UIViewHostApiImpl({
     this.binaryMessenger,
-    InstanceManager? instanceManager,
+    InstanceManager instanceManager,
   })  : instanceManager = instanceManager ?? NSObject.globalInstanceManager,
         super(binaryMessenger: binaryMessenger);
 
@@ -93,7 +93,7 @@ class UIViewHostApiImpl extends UIViewHostApi {
   ///
   /// If it is null, the default BinaryMessenger will be used which routes to
   /// the host platform.
-  final BinaryMessenger? binaryMessenger;
+  final BinaryMessenger binaryMessenger;
 
   /// Maintains instances stored to communicate with Objective-C objects.
   final InstanceManager instanceManager;
@@ -101,10 +101,10 @@ class UIViewHostApiImpl extends UIViewHostApi {
   /// Calls [setBackgroundColor] with the ids of the provided object instances.
   Future<void> setBackgroundColorForInstances(
     UIView instance,
-    Color? color,
+    Color color,
   ) async {
     return setBackgroundColor(
-      instanceManager.getIdentifier(instance)!,
+      instanceManager.getIdentifier(instance),
       color?.value,
     );
   }
@@ -114,6 +114,6 @@ class UIViewHostApiImpl extends UIViewHostApi {
     UIView instance,
     bool opaque,
   ) async {
-    return setOpaque(instanceManager.getIdentifier(instance)!, opaque);
+    return setOpaque(instanceManager.getIdentifier(instance), opaque);
   }
 }

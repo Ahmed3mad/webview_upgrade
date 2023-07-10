@@ -22,12 +22,12 @@ import 'web_kit_webview_widget.dart';
 class CupertinoWebView implements WebViewPlatform {
   @override
   Widget build({
-    required BuildContext context,
-    required CreationParams creationParams,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
-    required JavascriptChannelRegistry javascriptChannelRegistry,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
+    @required BuildContext context,
+    @required CreationParams creationParams,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    @required JavascriptChannelRegistry javascriptChannelRegistry,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   }) {
     return WebKitWebViewWidget(
       creationParams: creationParams,
@@ -56,6 +56,6 @@ class CupertinoWebView implements WebViewPlatform {
       throw Exception(
           'Could not clear cookies as no implementation for WebViewCookieManagerPlatform has been registered.');
     }
-    return WebViewCookieManagerPlatform.instance!.clearCookies();
+    return WebViewCookieManagerPlatform.instance.clearCookies();
   }
 }

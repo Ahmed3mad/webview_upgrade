@@ -1,0 +1,15 @@
+#!/bin/sh
+# This is a generated file; do not edit or check into version control.
+export "FLUTTER_ROOT=C:\Users\user\fvm\versions\1.22.6"
+export "FLUTTER_APPLICATION_PATH=C:\Users\user\StudioProjects\webview\packages-packages-webview_flutter-webview_flutter_wkwebview"
+export "FLUTTER_TARGET=lib\main.dart"
+export "FLUTTER_BUILD_DIR=build"
+export "SYMROOT=${SOURCE_ROOT}/../build\ios"
+export "OTHER_LDFLAGS=$(inherited) -framework Flutter"
+export "FLUTTER_FRAMEWORK_DIR=C:\Users\user\fvm\versions\1.22.6\bin\cache\artifacts\engine\ios"
+export "FLUTTER_BUILD_NAME=3.1.1"
+export "FLUTTER_BUILD_NUMBER=3.1.1"
+export "DART_OBFUSCATION=false"
+export "TRACK_WIDGET_CREATION=false"
+export "TREE_SHAKE_ICONS=false"
+export "PACKAGE_CONFIG=.packages"

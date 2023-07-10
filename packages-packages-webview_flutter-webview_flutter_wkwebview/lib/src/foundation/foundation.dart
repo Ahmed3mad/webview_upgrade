@@ -178,7 +178,7 @@ enum NSHttpCookiePropertyKey {
 class NSUrlRequest {
   /// Constructs an [NSUrlRequest].
   const NSUrlRequest({
-    required this.url,
+    @required this.url,
     this.httpMethod,
     this.httpBody,
     this.allHttpHeaderFields = const <String, String>{},
@@ -190,10 +190,10 @@ class NSUrlRequest {
   /// The HTTP request method.
   ///
   /// The default HTTP method is “GET”.
-  final String? httpMethod;
+  final String httpMethod;
 
   /// Data sent as the message body of a request, as in an HTTP POST request.
-  final Uint8List? httpBody;
+  final Uint8List httpBody;
 
   /// All of the HTTP header fields for a request.
   final Map<String, String> allHttpHeaderFields;
@@ -206,9 +206,9 @@ class NSUrlRequest {
 class NSError {
   /// Constructs an [NSError].
   const NSError({
-    required this.code,
-    required this.domain,
-    required this.localizedDescription,
+    @required this.code,
+    @required this.domain,
+    @required this.localizedDescription,
   });
 
   /// The error code.
@@ -245,8 +245,8 @@ class NSObject with Copyable {
   /// create copies.
   NSObject.detached({
     this.observeValue,
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) : _api = NSObjectHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
@@ -284,14 +284,14 @@ class NSObject with Copyable {
   final void Function(
     String keyPath,
     NSObject object,
-    Map<NSKeyValueChangeKey, Object?> change,
-  )? observeValue;
+    Map<NSKeyValueChangeKey, Object> change,
+  ) observeValue;
 
   /// Registers the observer object to receive KVO notifications.
   Future<void> addObserver(
     NSObject observer, {
-    required String keyPath,
-    required Set<NSKeyValueObservingOptions> options,
+    @required String keyPath,
+    @required Set<NSKeyValueObservingOptions> options,
   }) {
     assert(options.isNotEmpty);
     return _api.addObserverForInstances(
@@ -303,7 +303,7 @@ class NSObject with Copyable {
   }
 
   /// Stops the observer object from receiving change notifications for the property.
-  Future<void> removeObserver(NSObject observer, {required String keyPath}) {
+  Future<void> removeObserver(NSObject observer, {@required String keyPath}) {
     return _api.removeObserverForInstances(this, observer, keyPath);
   }
 
