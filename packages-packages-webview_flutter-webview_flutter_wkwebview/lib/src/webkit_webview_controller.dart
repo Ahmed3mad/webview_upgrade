@@ -137,14 +137,14 @@ class WebKitWebViewController extends PlatformWebViewController {
   WKWebView get _webView => __webView ??= _webKitParams.webKitProxy.createWebView(
     _webKitParams._configuration,
     observeValue: withWeakRefenceTo(this, (
-      WeakReference<WebKitWebViewController> weakReference,
+      WebKitWebViewController weakReference,
     ) {
       return (
         String keyPath,
         NSObject object,
         Map<NSKeyValueChangeKey, Object> change,
       ) {
-        final ProgressCallback progressCallback = weakReference.target?._currentNavigationDelegate?._onProgress;
+        final ProgressCallback progressCallback = weakReference?._currentNavigationDelegate?._onProgress;
         if (progressCallback != null) {
           final double progress = change[NSKeyValueChangeKey.newValue] as double;
           progressCallback((progress * 100).round());
@@ -431,13 +431,13 @@ class WebKitJavaScriptChannelParams extends JavaScriptChannelParams {
         _messageHandler = webKitProxy.createScriptMessageHandler(
           didReceiveScriptMessage: withWeakRefenceTo(
             onMessageReceived,
-            (WeakReference<void Function(JavaScriptMessage)> weakReference) {
+            (void Function(JavaScriptMessage) weakReference) {
               return (
                 WKUserContentController controller,
                 WKScriptMessage message,
               ) {
-                if (weakReference.target != null) {
-                  weakReference.target(
+                if (weakReference != null) {
+                  weakReference(
                     JavaScriptMessage(message: message.body.toString()),
                   );
                 }
@@ -589,24 +589,24 @@ class WebKitNavigationDelegate extends PlatformNavigationDelegate {
       : super.implementation(params is WebKitNavigationDelegateCreationParams
             ? params
             : WebKitNavigationDelegateCreationParams.fromPlatformNavigationDelegateCreationParams(params)) {
-    final WeakReference<WebKitNavigationDelegate> weakThis = WeakReference<WebKitNavigationDelegate>(this);
+    final WebKitNavigationDelegate weakThis = this;
     _navigationDelegate = (this.params as WebKitNavigationDelegateCreationParams).webKitProxy.createNavigationDelegate(
       didFinishNavigation: (WKWebView webView, String url) {
-        if (weakThis.target?._onPageFinished != null) {
-          weakThis.target._onPageFinished(url ?? '');
+        if (weakThis?._onPageFinished != null) {
+          weakThis._onPageFinished(url ?? '');
         }
       },
       didStartProvisionalNavigation: (WKWebView webView, String url) {
-        if (weakThis.target?._onPageStarted != null) {
-          weakThis.target._onPageStarted(url ?? '');
+        if (weakThis?._onPageStarted != null) {
+          weakThis._onPageStarted(url ?? '');
         }
       },
       decidePolicyForNavigationAction: (
         WKWebView webView,
         WKNavigationAction action,
       ) async {
-        if (weakThis.target?._onNavigationRequest != null) {
-          final NavigationDecision decision = await weakThis.target._onNavigationRequest(NavigationRequest(
+        if (weakThis?._onNavigationRequest != null) {
+          final NavigationDecision decision = await weakThis._onNavigationRequest(NavigationRequest(
             url: action.request.url,
             isMainFrame: action.targetFrame.isMainFrame,
           ));
@@ -620,22 +620,22 @@ class WebKitNavigationDelegate extends PlatformNavigationDelegate {
         return WKNavigationActionPolicy.allow;
       },
       didFailNavigation: (WKWebView webView, NSError error) {
-        if (weakThis.target?._onWebResourceError != null) {
-          weakThis.target._onWebResourceError(
+        if (weakThis?._onWebResourceError != null) {
+          weakThis._onWebResourceError(
             WebKitWebResourceError._(error, isForMainFrame: true),
           );
         }
       },
       didFailProvisionalNavigation: (WKWebView webView, NSError error) {
-        if (weakThis.target?._onWebResourceError != null) {
-          weakThis.target._onWebResourceError(
+        if (weakThis?._onWebResourceError != null) {
+          weakThis._onWebResourceError(
             WebKitWebResourceError._(error, isForMainFrame: true),
           );
         }
       },
       webViewWebContentProcessDidTerminate: (WKWebView webView) {
-        if (weakThis.target?._onWebResourceError != null) {
-          weakThis.target._onWebResourceError(
+        if (weakThis?._onWebResourceError != null) {
+          weakThis._onWebResourceError(
             WebKitWebResourceError._(
               const NSError(
                 code: WKErrorCode.webContentProcessTerminated,

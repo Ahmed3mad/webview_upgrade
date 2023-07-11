@@ -134,28 +134,28 @@ class WebKitWebViewPlatformController extends WebViewPlatformController {
   WKNavigationDelegate _navigationDelegate;
   WKNavigationDelegate get navigationDelegate => _navigationDelegate ??= withWeakRefenceTo(
     this,
-    (WeakReference<WebKitWebViewPlatformController> weakReference) {
+    (WebKitWebViewPlatformController weakReference) {
       return webViewProxy.createNavigationDelegate(
         didFinishNavigation: (WKWebView webView, String url) {
-          weakReference.target?.callbacksHandler.onPageFinished(url ?? '');
+          weakReference.callbacksHandler.onPageFinished(url ?? '');
         },
         didStartProvisionalNavigation: (WKWebView webView, String url) {
-          weakReference.target?.callbacksHandler.onPageStarted(url ?? '');
+          weakReference.callbacksHandler.onPageStarted(url ?? '');
         },
         decidePolicyForNavigationAction: (
           WKWebView webView,
           WKNavigationAction action,
         ) async {
-          if (weakReference.target == null) {
+          if (weakReference == null) {
             return WKNavigationActionPolicy.allow;
           }
 
-          if (!weakReference.target._hasNavigationDelegate) {
+          if (!weakReference._hasNavigationDelegate) {
             return WKNavigationActionPolicy.allow;
           }
 
           final bool allow =
-              await weakReference.target.callbacksHandler.onNavigationRequest(
+              await weakReference.callbacksHandler.onNavigationRequest(
             url: action.request.url,
             isForMainFrame: action.targetFrame.isMainFrame,
           );
@@ -165,17 +165,17 @@ class WebKitWebViewPlatformController extends WebViewPlatformController {
               : WKNavigationActionPolicy.cancel;
         },
         didFailNavigation: (WKWebView webView, NSError error) {
-          weakReference.target?.callbacksHandler.onWebResourceError(
+          weakReference.callbacksHandler.onWebResourceError(
             _toWebResourceError(error),
           );
         },
         didFailProvisionalNavigation: (WKWebView webView, NSError error) {
-          weakReference.target?.callbacksHandler.onWebResourceError(
+          weakReference.callbacksHandler.onWebResourceError(
             _toWebResourceError(error),
           );
         },
         webViewWebContentProcessDidTerminate: (WKWebView webView) {
-          weakReference.target?.callbacksHandler.onWebResourceError(
+          weakReference.callbacksHandler.onWebResourceError(
             WebResourceError(
               errorCode: WKErrorCode.webContentProcessTerminated,
               // Value from https://developer.apple.com/documentation/webkit/wkerrordomain?language=objc.
@@ -203,7 +203,7 @@ class WebKitWebViewPlatformController extends WebViewPlatformController {
       configuration,
       observeValue: withWeakRefenceTo(
         callbacksHandler,
-        (WeakReference<WebViewPlatformCallbacksHandler> weakReference) {
+        (WebViewPlatformCallbacksHandler weakReference) {
           return (
             String keyPath,
             NSObject object,
@@ -211,7 +211,7 @@ class WebKitWebViewPlatformController extends WebViewPlatformController {
           ) {
             final double progress =
                 change[NSKeyValueChangeKey.newValue] as double;
-            weakReference.target?.onProgress((progress * 100).round());
+            weakReference.onProgress((progress * 100).round());
           };
         },
       ),
@@ -441,12 +441,12 @@ class WebKitWebViewPlatformController extends WebViewPlatformController {
               webViewProxy.createScriptMessageHandler(
             didReceiveScriptMessage: withWeakRefenceTo(
               javascriptChannelRegistry,
-              (WeakReference<JavascriptChannelRegistry> weakReference) {
+              (JavascriptChannelRegistry weakReference) {
                 return (
                   WKUserContentController userContentController,
                   WKScriptMessage message,
                 ) {
-                  weakReference.target?.onJavascriptChannelMessage(
+                  weakReference.onJavascriptChannelMessage(
                     message.name,
                     message.body.toString(),
                   );
