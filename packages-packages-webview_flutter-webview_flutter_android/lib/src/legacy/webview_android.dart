@@ -22,12 +22,12 @@ import 'webview_android_widget.dart';
 class AndroidWebView implements WebViewPlatform {
   @override
   Widget build({
-    required BuildContext context,
-    required CreationParams creationParams,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
-    required JavascriptChannelRegistry javascriptChannelRegistry,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
+    @required BuildContext context,
+    @required CreationParams creationParams,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    @required JavascriptChannelRegistry javascriptChannelRegistry,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   }) {
     return WebViewAndroidWidget(
       useHybridComposition: false,
@@ -54,7 +54,7 @@ class AndroidWebView implements WebViewPlatform {
             },
             gestureRecognizers: gestureRecognizers,
             layoutDirection:
-                Directionality.maybeOf(context) ?? TextDirection.rtl,
+                Directionality.of(context) ?? TextDirection.rtl,
             creationParams: JavaObject.globalInstanceManager
                 .getIdentifier(controller.webView),
             creationParamsCodec: const StandardMessageCodec(),
@@ -70,6 +70,6 @@ class AndroidWebView implements WebViewPlatform {
       throw Exception(
           'Could not clear cookies as no implementation for WebViewCookieManagerPlatform has been registered.');
     }
-    return WebViewCookieManagerPlatform.instance!.clearCookies();
+    return WebViewCookieManagerPlatform.instance.clearCookies();
   }
 }

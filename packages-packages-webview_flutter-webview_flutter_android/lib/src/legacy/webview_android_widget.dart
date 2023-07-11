@@ -17,12 +17,12 @@ import 'webview_android_cookie_manager.dart';
 class WebViewAndroidWidget extends StatefulWidget {
   /// Constructs a [WebViewAndroidWidget].
   const WebViewAndroidWidget({
-    super.key,
-    required this.creationParams,
-    required this.useHybridComposition,
-    required this.callbacksHandler,
-    required this.javascriptChannelRegistry,
-    required this.onBuildWidget,
+    key,
+    @required this.creationParams,
+    @required this.useHybridComposition,
+    @required this.callbacksHandler,
+    @required this.javascriptChannelRegistry,
+    @required this.onBuildWidget,
     @visibleForTesting this.webViewProxy = const WebViewProxy(),
     @visibleForTesting
         this.flutterAssetManager = const android_webview.FlutterAssetManager(),
@@ -64,14 +64,14 @@ class WebViewAndroidWidget extends StatefulWidget {
       onBuildWidget;
 
   /// Manages the JavaScript storage APIs.
-  final android_webview.WebStorage? webStorage;
+  final android_webview.WebStorage webStorage;
 
   @override
   State<StatefulWidget> createState() => _WebViewAndroidWidgetState();
 }
 
 class _WebViewAndroidWidgetState extends State<WebViewAndroidWidget> {
-  late final WebViewAndroidPlatformController controller;
+   WebViewAndroidPlatformController controller;
 
   @override
   void initState() {
@@ -97,14 +97,14 @@ class _WebViewAndroidWidgetState extends State<WebViewAndroidWidget> {
 class WebViewAndroidPlatformController extends WebViewPlatformController {
   /// Construct a [WebViewAndroidPlatformController].
   WebViewAndroidPlatformController({
-    required bool useHybridComposition,
-    required CreationParams creationParams,
-    required this.callbacksHandler,
-    required this.javascriptChannelRegistry,
+    @required bool useHybridComposition,
+    @required CreationParams creationParams,
+    @required this.callbacksHandler,
+    @required this.javascriptChannelRegistry,
     @visibleForTesting this.webViewProxy = const WebViewProxy(),
     @visibleForTesting
         this.flutterAssetManager = const android_webview.FlutterAssetManager(),
-    @visibleForTesting android_webview.WebStorage? webStorage,
+    @visibleForTesting android_webview.WebStorage webStorage,
   })  : webStorage = webStorage ?? android_webview.WebStorage.instance,
         assert(creationParams.webSettings?.hasNavigationDelegate != null),
         super(callbacksHandler) {
@@ -125,7 +125,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
     webView.setWebChromeClient(webChromeClient);
     webView.setWebViewClient(webViewClient);
 
-    final String? initialUrl = creationParams.initialUrl;
+    final String initialUrl = creationParams.initialUrl;
     if (initialUrl != null) {
       loadUrl(initialUrl, <String, String>{});
     }
@@ -134,8 +134,9 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   final Map<String, WebViewAndroidJavaScriptChannel> _javaScriptChannels =
       <String, WebViewAndroidJavaScriptChannel>{};
 
-  late final android_webview.WebViewClient _webViewClient = withWeakReferenceTo(
+  android_webview.WebViewClient _webViewClient = withWeakReferenceTo(
       this, (WeakReference<WebViewAndroidPlatformController> weakReference) {
+
     return webViewProxy.createWebViewClient(
       onPageStarted: (_, String url) {
         weakReference.target?.callbacksHandler.onPageStarted(url);
@@ -191,7 +192,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   bool _hasProgressTracking = false;
 
   /// Represents the WebView maintained by platform code.
-  late final android_webview.WebView webView;
+   android_webview.WebView webView;
 
   /// Handles callbacks that are made by [android_webview.WebViewClient], [android_webview.DownloadListener], and [android_webview.WebChromeClient].
   final WebViewPlatformCallbacksHandler callbacksHandler;
@@ -211,7 +212,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
 
   /// Receives callbacks when content should be downloaded instead.
   @visibleForTesting
-  late final android_webview.DownloadListener downloadListener =
+  android_webview.DownloadListener downloadListener =
       android_webview.DownloadListener(
     onDownloadStart: withWeakReferenceTo(
       this,
@@ -234,13 +235,13 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
 
   /// Handles JavaScript dialogs, favicons, titles, new windows, and the progress for [android_webview.WebView].
   @visibleForTesting
-  late final android_webview.WebChromeClient webChromeClient =
+  android_webview.WebChromeClient webChromeClient =
       android_webview.WebChromeClient(
           onProgressChanged: withWeakReferenceTo(
     this,
     (WeakReference<WebViewAndroidPlatformController> weakReference) {
       return (_, int progress) {
-        final WebViewAndroidPlatformController? controller =
+        final WebViewAndroidPlatformController controller =
             weakReference.target;
         if (controller != null && controller._hasProgressTracking) {
           controller.callbacksHandler.onProgress(progress);
@@ -257,7 +258,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   android_webview.WebViewClient get webViewClient => _webViewClient;
 
   @override
-  Future<void> loadHtmlString(String html, {String? baseUrl}) {
+  Future<void> loadHtmlString(String html, {String baseUrl}) {
     return webView.loadDataWithBaseUrl(
       baseUrl: baseUrl,
       data: html,
@@ -267,8 +268,8 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
 
   @override
   Future<void> loadFile(String absoluteFilePath) {
-    final String url = absoluteFilePath.startsWith('file://')
-        ? absoluteFilePath
+    final String url = absoluteFilePath.startsWith('file://')?
+         absoluteFilePath
         : 'file://$absoluteFilePath';
 
     webView.settings.setAllowFileAccess(true);
@@ -281,13 +282,12 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
         await flutterAssetManager.getAssetFilePathByName(key);
     final List<String> pathElements = assetFilePath.split('/');
     final String fileName = pathElements.removeLast();
-    final List<String?> paths =
+    final List<String> paths =
         await flutterAssetManager.list(pathElements.join('/'));
 
     if (!paths.contains(fileName)) {
       throw ArgumentError(
         'Asset for key "$key" not found.',
-        'key',
       );
     }
 
@@ -300,7 +300,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   @override
   Future<void> loadUrl(
     String url,
-    Map<String, String>? headers,
+    Map<String, String> headers,
   ) {
     return webView.loadUrl(url, headers ?? <String, String>{});
   }
@@ -334,7 +334,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   }
 
   @override
-  Future<String?> currentUrl() => webView.getUrl();
+  Future<String> currentUrl() => webView.getUrl();
 
   @override
   Future<bool> canGoBack() => webView.canGoBack();
@@ -363,12 +363,12 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
     await Future.wait(<Future<void>>[
       _setUserAgent(setting.userAgent),
       if (setting.hasNavigationDelegate != null)
-        _setHasNavigationDelegate(setting.hasNavigationDelegate!),
+        _setHasNavigationDelegate(setting.hasNavigationDelegate),
       if (setting.javascriptMode != null)
-        _setJavaScriptMode(setting.javascriptMode!),
+        _setJavaScriptMode(setting.javascriptMode),
       if (setting.debuggingEnabled != null)
-        _setDebuggingEnabled(setting.debuggingEnabled!),
-      if (setting.zoomEnabled != null) _setZoomEnabled(setting.zoomEnabled!),
+        _setDebuggingEnabled(setting.debuggingEnabled),
+      if (setting.zoomEnabled != null) _setZoomEnabled(setting.zoomEnabled),
     ]);
   }
 
@@ -418,7 +418,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
       ).map<Future<void>>(
         (String channelName) {
           final WebViewAndroidJavaScriptChannel javaScriptChannel =
-              _javaScriptChannels[channelName]!;
+              _javaScriptChannels[channelName];
           _javaScriptChannels.remove(channelName);
           return webView.removeJavaScriptChannel(javaScriptChannel);
         },
@@ -427,7 +427,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   }
 
   @override
-  Future<String?> getTitle() => webView.getTitle();
+  Future<String> getTitle() => webView.getTitle();
 
   @override
   Future<void> scrollTo(int x, int y) => webView.scrollTo(x, y);
@@ -442,12 +442,12 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   Future<int> getScrollY() => webView.getScrollY();
 
   void _setCreationParams(CreationParams creationParams) {
-    final WebSettings? webSettings = creationParams.webSettings;
+    final WebSettings webSettings = creationParams.webSettings;
     if (webSettings != null) {
       updateSettings(webSettings);
     }
 
-    final String? userAgent = creationParams.userAgent;
+    final String userAgent = creationParams.userAgent;
     if (userAgent != null) {
       webView.settings.setUserAgentString(userAgent);
     }
@@ -457,7 +457,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
           AutoMediaPlaybackPolicy.always_allow,
     );
 
-    final Color? backgroundColor = creationParams.backgroundColor;
+    final Color backgroundColor = creationParams.backgroundColor;
     if (backgroundColor != null) {
       webView.setBackgroundColor(backgroundColor);
     }
@@ -470,7 +470,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
     WebViewCookieManagerPlatform.instance ??= WebViewAndroidCookieManager();
 
     creationParams.cookies
-        .forEach(WebViewCookieManagerPlatform.instance!.setCookie);
+        .forEach(WebViewCookieManagerPlatform.instance.setCookie);
   }
 
   Future<void> _setHasNavigationDelegate(bool hasNavigationDelegate) {
@@ -493,7 +493,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
     return webViewProxy.setWebContentsDebuggingEnabled(debuggingEnabled);
   }
 
-  Future<void> _setUserAgent(WebSetting<String?> userAgent) {
+  Future<void> _setUserAgent(WebSetting<String> userAgent) {
     if (userAgent.isPresent) {
       // If the string is empty, the system default value will be used.
       return webView.settings.setUserAgentString(userAgent.value ?? '');
@@ -548,8 +548,8 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   }
 
   void _handleNavigationRequest({
-    required String url,
-    required bool isForMainFrame,
+    @required String url,
+    @required bool isForMainFrame,
   }) {
     if (!_hasNavigationDelegate) {
       return;
@@ -577,7 +577,7 @@ class WebViewAndroidJavaScriptChannel
     extends android_webview.JavaScriptChannel {
   /// Creates a [WebViewAndroidJavaScriptChannel].
   WebViewAndroidJavaScriptChannel(
-    super.channelName,
+    channelName,
     this.javascriptChannelRegistry,
   ) : super(
           postMessage: withWeakReferenceTo(
@@ -606,31 +606,31 @@ class WebViewProxy {
   const WebViewProxy();
 
   /// Constructs a [android_webview.WebView].
-  android_webview.WebView createWebView({required bool useHybridComposition}) {
+  android_webview.WebView createWebView({@required bool useHybridComposition}) {
     return android_webview.WebView(useHybridComposition: useHybridComposition);
   }
 
   /// Constructs a [android_webview.WebViewClient].
   android_webview.WebViewClient createWebViewClient({
-    void Function(android_webview.WebView webView, String url)? onPageStarted,
-    void Function(android_webview.WebView webView, String url)? onPageFinished,
+    void Function(android_webview.WebView webView, String url) onPageStarted,
+    void Function(android_webview.WebView webView, String url) onPageFinished,
     void Function(
       android_webview.WebView webView,
       android_webview.WebResourceRequest request,
       android_webview.WebResourceError error,
-    )?
+    )
         onReceivedRequestError,
     void Function(
       android_webview.WebView webView,
       int errorCode,
       String description,
       String failingUrl,
-    )?
+    )
         onReceivedError,
     void Function(android_webview.WebView webView,
-            android_webview.WebResourceRequest request)?
+            android_webview.WebResourceRequest request)
         requestLoading,
-    void Function(android_webview.WebView webView, String url)? urlLoading,
+    void Function(android_webview.WebView webView, String url) urlLoading,
   }) {
     return android_webview.WebViewClient(
       onPageStarted: onPageStarted,

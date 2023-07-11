@@ -31,8 +31,8 @@ class JavaObject with Copyable {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   JavaObject.detached({
-    BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
+    BinaryMessenger binaryMessenger,
+    InstanceManager instanceManager,
   }) : _api = JavaObjectHostApiImpl(
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
@@ -110,7 +110,9 @@ class WebView extends JavaObject {
   final bool useHybridComposition;
 
   /// The [WebSettings] object used to control the settings for this WebView.
-  late final WebSettings settings = WebSettings(this);
+  WebSettings _settings;
+
+  get settings => _settings ??= WebSettings(this);
 
   /// Enables debugging of web contents (HTML / CSS / JavaScript) loaded into any WebViews of this application.
   ///
@@ -146,9 +148,9 @@ class WebView extends JavaObject {
   /// can't handle the specified MIME type, it will download the data. If
   /// `null`, defaults to 'text/html'.
   Future<void> loadData({
-    required String data,
-    String? mimeType,
-    String? encoding,
+    @required String data,
+    String mimeType,
+    String encoding,
   }) {
     return api.loadDataFromInstance(
       this,
@@ -194,11 +196,11 @@ class WebView extends JavaObject {
   /// to identify the main frame's origin in a trustworthy way, you should use a
   /// valid HTTP or HTTPS base URL to set the origin.
   Future<void> loadDataWithBaseUrl({
-    String? baseUrl,
-    required String data,
-    String? mimeType,
-    String? encoding,
-    String? historyUrl,
+    String baseUrl,
+    @required String data,
+    String mimeType,
+    String encoding,
+    String historyUrl,
   }) {
     return api.loadDataWithBaseUrlFromInstance(
       this,
@@ -235,7 +237,7 @@ class WebView extends JavaObject {
   /// begun, the current page may not have changed.
   ///
   /// Returns null if no page has been loaded.
-  Future<String?> getUrl() {
+  Future<String> getUrl() {
     return api.getUrlFromInstance(this);
   }
 
@@ -282,7 +284,7 @@ class WebView extends JavaObject {
   /// JavaScript state from an empty WebView is no longer persisted across
   /// navigations like [loadUrl]. For example, global variables and functions
   /// defined before calling [loadUrl]) will not exist in the loaded page.
-  Future<String?> evaluateJavascript(String javascriptString) {
+  Future<String> evaluateJavascript(String javascriptString) {
     return api.evaluateJavascriptFromInstance(
       this,
       javascriptString,
@@ -293,7 +295,7 @@ class WebView extends JavaObject {
   /// Gets the title for the current page.
   ///
   /// Returns null if no page has been loaded.
-  Future<String?> getTitle() {
+  Future<String> getTitle() {
     return api.getTitleFromInstance(this);
   }
 
@@ -379,7 +381,7 @@ class WebView extends JavaObject {
   /// Registers the interface to be used when content can not be handled by the rendering engine, and should be downloaded instead.
   ///
   /// This will replace the current handler.
-  Future<void> setDownloadListener(DownloadListener? listener) {
+  Future<void> setDownloadListener(DownloadListener listener) {
     return api.setDownloadListenerFromInstance(this, listener);
   }
 
@@ -388,7 +390,7 @@ class WebView extends JavaObject {
   /// This is an implementation of [WebChromeClient] for use in handling
   /// JavaScript dialogs, favicons, titles, and the progress. This will replace
   /// the current handler.
-  Future<void> setWebChromeClient(WebChromeClient? client) {
+  Future<void> setWebChromeClient(WebChromeClient client) {
     return api.setWebChromeClientFromInstance(this, client);
   }
 
@@ -407,7 +409,7 @@ class WebView extends JavaObject {
 class CookieManager {
   CookieManager._();
 
-  static CookieManager? _instance;
+  static CookieManager _instance;
 
   /// Gets the globally set CookieManager instance.
   static CookieManager get instance => _instance ??= CookieManager._();
@@ -511,7 +513,7 @@ class WebSettings extends JavaObject {
   /// If the string is empty, the system default value will be used. Note that
   /// starting from KITKAT Android version, changing the user-agent while
   /// loading a web page causes WebView to initiate loading once again.
-  Future<void> setUserAgentString(String? userAgentString) {
+  Future<void> setUserAgentString(String userAgentString) {
     return api.setUserAgentStringFromInstance(this, userAgentString);
   }
 
@@ -604,7 +606,7 @@ class JavaScriptChannel extends JavaObject {
   /// Constructs a [JavaScriptChannel].
   JavaScriptChannel(
     this.channelName, {
-    required this.postMessage,
+    @required this.postMessage,
   }) : super.detached() {
     AndroidWebViewFlutterApis.instance.ensureSetUp();
     api.createFromInstance(this);
@@ -617,7 +619,7 @@ class JavaScriptChannel extends JavaObject {
   /// create copies.
   JavaScriptChannel.detached(
     this.channelName, {
-    required this.postMessage,
+    @required this.postMessage,
   }) : super.detached();
 
   /// Pigeon Host Api implementation for [JavaScriptChannel].
@@ -756,7 +758,7 @@ class WebViewClient extends JavaObject {
   /// embedded frame changes, i.e. clicking a link whose target is an iframe, it
   /// will also not be called for fragment navigations (navigations to
   /// #fragment_id).
-  final void Function(WebView webView, String url)? onPageStarted;
+  final void Function(WebView webView, String url) onPageStarted;
 
   // TODO(bparrishMines): Update documentation when WebView.postVisualStateCallback is added.
   /// Notify the host application that a page has finished loading.
@@ -764,7 +766,7 @@ class WebViewClient extends JavaObject {
   /// This method is called only for main frame. Receiving an [onPageFinished]
   /// callback does not guarantee that the next frame drawn by WebView will
   /// reflect the state of the DOM at this point.
-  final void Function(WebView webView, String url)? onPageFinished;
+  final void Function(WebView webView, String url) onPageFinished;
 
   /// Report web resource loading error to the host application.
   ///
@@ -777,7 +779,7 @@ class WebViewClient extends JavaObject {
     WebView webView,
     WebResourceRequest request,
     WebResourceError error,
-  )? onReceivedRequestError;
+  ) onReceivedRequestError;
 
   /// Report an error to the host application.
   ///
@@ -789,20 +791,20 @@ class WebViewClient extends JavaObject {
     int errorCode,
     String description,
     String failingUrl,
-  )? onReceivedError;
+  ) onReceivedError;
 
   /// When the current [WebView] wants to load a URL.
   ///
   /// The value set by [setSynchronousReturnValueForShouldOverrideUrlLoading]
   /// indicates whether the [WebView] loaded the request.
-  final void Function(WebView webView, WebResourceRequest request)?
+  final void Function(WebView webView, WebResourceRequest request)
       requestLoading;
 
   /// When the current [WebView] wants to load a URL.
   ///
   /// The value set by [setSynchronousReturnValueForShouldOverrideUrlLoading]
   /// indicates whether the [WebView] loaded the URL.
-  final void Function(WebView webView, String url)? urlLoading;
+  final void Function(WebView webView, String url) urlLoading;
 
   /// Sets the required synchronous return value for the Java method,
   /// `WebViewClient.shouldOverrideUrlLoading(...)`.
@@ -839,7 +841,7 @@ class WebViewClient extends JavaObject {
 /// engine for [WebView], and should be downloaded instead.
 class DownloadListener extends JavaObject {
   /// Constructs a [DownloadListener].
-  DownloadListener({required this.onDownloadStart}) : super.detached() {
+  DownloadListener({@required this.onDownloadStart}) : super.detached() {
     AndroidWebViewFlutterApis.instance.ensureSetUp();
     api.createFromInstance(this);
   }
@@ -849,7 +851,8 @@ class DownloadListener extends JavaObject {
   ///
   /// This should only be used by subclasses created by this library or to
   /// create copies.
-  DownloadListener.detached({required this.onDownloadStart}) : super.detached();
+  DownloadListener.detached({@required this.onDownloadStart})
+      : super.detached();
 
   /// Pigeon Host Api implementation for [DownloadListener].
   @visibleForTesting
@@ -894,7 +897,7 @@ class WebChromeClient extends JavaObject {
   static WebChromeClientHostApiImpl api = WebChromeClientHostApiImpl();
 
   /// Notify the host application that a file should be downloaded.
-  final void Function(WebView webView, int progress)? onProgressChanged;
+  final void Function(WebView webView, int progress) onProgressChanged;
 
   /// Indicates the client should show a file chooser.
   ///
@@ -907,7 +910,7 @@ class WebChromeClient extends JavaObject {
   final Future<List<String>> Function(
     WebView webView,
     FileChooserParams params,
-  )? onShowFileChooser;
+  ) onShowFileChooser;
 
   /// Sets the required synchronous return value for the Java method,
   /// `WebChromeClient.onShowFileChooser(...)`.
@@ -957,12 +960,12 @@ class FileChooserParams extends JavaObject {
   /// This should only be used by subclasses created by this library or to
   /// create copies.
   FileChooserParams.detached({
-    required this.isCaptureEnabled,
-    required this.acceptTypes,
-    required this.filenameHint,
-    required this.mode,
-    super.binaryMessenger,
-    super.instanceManager,
+    @required this.isCaptureEnabled,
+    @required this.acceptTypes,
+    @required this.filenameHint,
+    @required this.mode,
+    // super.binaryMessenger,
+    // super.instanceManager,
   }) : super.detached();
 
   /// Preference for a live media captured value (e.g. Camera, Microphone).
@@ -972,7 +975,7 @@ class FileChooserParams extends JavaObject {
   final List<String> acceptTypes;
 
   /// The file name of a default selection if specified, or null.
-  final String? filenameHint;
+  final String filenameHint;
 
   /// Mode of how to select files for a file chooser.
   final FileChooserMode mode;
@@ -992,12 +995,12 @@ class FileChooserParams extends JavaObject {
 class WebResourceRequest {
   /// Constructs a [WebResourceRequest].
   WebResourceRequest({
-    required this.url,
-    required this.isForMainFrame,
-    required this.isRedirect,
-    required this.hasGesture,
-    required this.method,
-    required this.requestHeaders,
+    @required this.url,
+    @required this.isForMainFrame,
+    @required this.isRedirect,
+    @required this.hasGesture,
+    @required this.method,
+    @required this.requestHeaders,
   });
 
   /// The URL for which the resource request was made.
@@ -1009,7 +1012,7 @@ class WebResourceRequest {
   /// Whether the request was a result of a server-side redirect.
   ///
   /// Only supported on Android version >= 24.
-  final bool? isRedirect;
+  final bool isRedirect;
 
   /// Whether a gesture (such as a click) was associated with the request.
   final bool hasGesture;
@@ -1027,8 +1030,8 @@ class WebResourceRequest {
 class WebResourceError {
   /// Constructs a [WebResourceError].
   WebResourceError({
-    required this.errorCode,
-    required this.description,
+    @required this.errorCode,
+    @required this.description,
   });
 
   /// The integer code of the error (e.g. [WebViewClient.errorAuthentication].
@@ -1051,7 +1054,7 @@ class FlutterAssetManager {
   ///
   /// The assets are returned as a `List<String>`. The `List<String>` only
   /// contains files which are direct childs
-  Future<List<String?>> list(String path) => api.list(path);
+  Future<List<String>> list(String path) => api.list(path);
 
   /// Gets the relative file path to the Flutter asset with the given name.
   Future<String> getAssetFilePathByName(String name) =>

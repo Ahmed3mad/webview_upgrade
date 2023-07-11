@@ -32,12 +32,12 @@ import 'webview_android_widget.dart';
 class SurfaceAndroidWebView extends AndroidWebView {
   @override
   Widget build({
-    required BuildContext context,
-    required CreationParams creationParams,
-    required JavascriptChannelRegistry javascriptChannelRegistry,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    @required BuildContext context,
+    @required CreationParams creationParams,
+    @required JavascriptChannelRegistry javascriptChannelRegistry,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
   }) {
     return WebViewAndroidWidget(
       useHybridComposition: true,
@@ -59,7 +59,7 @@ class SurfaceAndroidWebView extends AndroidWebView {
             );
           },
           onCreatePlatformView: (PlatformViewCreationParams params) {
-            final Color? backgroundColor = creationParams.backgroundColor;
+            final Color backgroundColor = creationParams.backgroundColor;
             return _createViewController(
               // On some Android devices, transparent backgrounds can cause
               // rendering issues on the non hybrid composition
@@ -73,9 +73,9 @@ class SurfaceAndroidWebView extends AndroidWebView {
               // we explicitly set it here so that the widget doesn't require an ambient
               // directionality.
               layoutDirection:
-                  Directionality.maybeOf(context) ?? TextDirection.ltr,
+                  Directionality.of(context) ?? TextDirection.ltr,
               webViewIdentifier: JavaObject.globalInstanceManager
-                  .getIdentifier(controller.webView)!,
+                  .getIdentifier(controller.webView),
             )
               ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
               ..addOnPlatformViewCreatedListener((int id) {
@@ -91,14 +91,14 @@ class SurfaceAndroidWebView extends AndroidWebView {
   }
 
   AndroidViewController _createViewController({
-    required bool hybridComposition,
-    required int id,
-    required String viewType,
-    required TextDirection layoutDirection,
-    required int webViewIdentifier,
+    @required bool hybridComposition,
+    @required int id,
+    @required String viewType,
+    @required TextDirection layoutDirection,
+    @required int webViewIdentifier,
   }) {
     if (hybridComposition) {
-      return PlatformViewsService.initExpensiveAndroidView(
+      return PlatformViewsService.initSurfaceAndroidView(
         id: id,
         viewType: viewType,
         layoutDirection: layoutDirection,

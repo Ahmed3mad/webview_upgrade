@@ -14,15 +14,15 @@ class PlatformViewsServiceProxy {
   const PlatformViewsServiceProxy();
 
   /// Proxy method for [PlatformViewsService.initExpensiveAndroidView].
-  ExpensiveAndroidViewController initExpensiveAndroidView({
-    required int id,
-    required String viewType,
-    required TextDirection layoutDirection,
+  SurfaceAndroidViewController initExpensiveAndroidView({
+    @required int id,
+    @required String viewType,
+    @required TextDirection layoutDirection,
     dynamic creationParams,
-    MessageCodec<dynamic>? creationParamsCodec,
-    VoidCallback? onFocus,
+    MessageCodec<dynamic> creationParamsCodec,
+    VoidCallback onFocus,
   }) {
-    return PlatformViewsService.initExpensiveAndroidView(
+    return PlatformViewsService.initSurfaceAndroidView(
       id: id,
       viewType: viewType,
       layoutDirection: layoutDirection,
@@ -34,12 +34,12 @@ class PlatformViewsServiceProxy {
 
   /// Proxy method for [PlatformViewsService.initSurfaceAndroidView].
   SurfaceAndroidViewController initSurfaceAndroidView({
-    required int id,
-    required String viewType,
-    required TextDirection layoutDirection,
+    @required int id,
+    @required String viewType,
+    @required TextDirection layoutDirection,
     dynamic creationParams,
-    MessageCodec<dynamic>? creationParamsCodec,
-    VoidCallback? onFocus,
+    MessageCodec<dynamic> creationParamsCodec,
+    VoidCallback onFocus,
   }) {
     return PlatformViewsService.initSurfaceAndroidView(
       id: id,

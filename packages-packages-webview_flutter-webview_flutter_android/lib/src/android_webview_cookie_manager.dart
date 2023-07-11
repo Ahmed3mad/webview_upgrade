@@ -34,7 +34,7 @@ class AndroidWebViewCookieManager extends PlatformWebViewCookieManager {
   /// Creates a new [AndroidWebViewCookieManager].
   AndroidWebViewCookieManager(
     PlatformWebViewCookieManagerCreationParams params, {
-    CookieManager? cookieManager,
+    CookieManager cookieManager,
   })  : _cookieManager = cookieManager ?? CookieManager.instance,
         super.implementation(
           params is AndroidWebViewCookieManagerCreationParams

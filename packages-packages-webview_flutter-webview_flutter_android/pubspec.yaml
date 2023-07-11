@@ -20,9 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   webview_flutter_platform_interface:
-    git:
-      url: https://github.com/Ahmed3mad/webview_upgrade/tree/main/packages-packages-webview_flutter-webview_flutter_platform_interface.git
-      ref: master
+      path: ../packages-packages-webview_flutter-webview_flutter_platform_interface
 
 dev_dependencies:
   flutter_driver:
