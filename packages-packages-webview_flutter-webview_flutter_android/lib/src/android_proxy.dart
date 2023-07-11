@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import 'android_webview.dart' as android_webview;
 
@@ -15,18 +15,99 @@ import 'android_webview.dart' as android_webview;
 ///
 /// By default each function calls the default constructor of the WebView class
 /// it intends to return.
+///
+
+android_webview.WebView _createAndroidWebView({
+  @required bool useHybridComposition,
+}) {
+  return android_webview.WebView(useHybridComposition: useHybridComposition);
+}
+
+android_webview.WebChromeClient _createAndroidWebChromeClient({
+  void Function(android_webview.WebView webView, int progress)
+      onProgressChanged,
+  Future<List<String>> Function(
+    android_webview.WebView webView,
+    android_webview.FileChooserParams params,
+  )
+      onShowFileChooser,
+}) {
+  return android_webview.WebChromeClient(
+      onProgressChanged: onProgressChanged,
+      onShowFileChooser: onShowFileChooser);
+}
+
+android_webview.WebViewClient _createAndroidWebViewClient({
+  void Function(android_webview.WebView webView, String url) onPageStarted,
+  void Function(android_webview.WebView webView, String url) onPageFinished,
+  void Function(
+    android_webview.WebView webView,
+    android_webview.WebResourceRequest request,
+    android_webview.WebResourceError error,
+  )
+      onReceivedRequestError,
+  @Deprecated('Only called on Android version < 23.')
+      void Function(
+    android_webview.WebView webView,
+    int errorCode,
+    String description,
+    String failingUrl,
+  )
+          onReceivedError,
+  void Function(
+    android_webview.WebView webView,
+    android_webview.WebResourceRequest request,
+  )
+      requestLoading,
+  void Function(android_webview.WebView webView, String url) urlLoading,
+}) {
+  return android_webview.WebViewClient(
+      onPageFinished: onPageFinished,
+      onPageStarted: onPageStarted,
+      onReceivedError: onReceivedError,
+      requestLoading: requestLoading,
+      urlLoading: urlLoading,
+      onReceivedRequestError: onReceivedRequestError);
+}
+
+android_webview.FlutterAssetManager _createFlutterAssetManager() {
+  return android_webview.FlutterAssetManager();
+}
+
+android_webview.JavaScriptChannel _createJavaScriptChannel(
+  String channelName, {
+  @required void Function(String) postMessage,
+}) {
+  return android_webview.JavaScriptChannel(channelName,
+      postMessage: postMessage);
+}
+
+android_webview.DownloadListener _createDownloadListener({
+  @required
+      void Function(
+    String url,
+    String userAgent,
+    String contentDisposition,
+    String mimetype,
+    int contentLength,
+  )
+          onDownloadStart,
+}) {
+  return android_webview.DownloadListener(
+    onDownloadStart: onDownloadStart,
+  );
+}
+
 class AndroidWebViewProxy {
   /// Constructs a [AndroidWebViewProxy].
-    AndroidWebViewProxy(
-    // {
-    // this.createAndroidWebView = android_webview.WebView.new,
-    // this.createAndroidWebChromeClient = android_webview.WebChromeClient.new,
-    // this.createAndroidWebViewClient = android_webview.WebViewClient.new,
-    // this.createFlutterAssetManager = android_webview.FlutterAssetManager.new,
-    // this.createJavaScriptChannel = android_webview.JavaScriptChannel.new,
-    // this.createDownloadListener = android_webview.DownloadListener.new,
-  // }
-  );
+  const AndroidWebViewProxy({
+    this.createAndroidWebView = _createAndroidWebView,
+    this.createAndroidWebChromeClient = _createAndroidWebChromeClient,
+    this.createAndroidWebViewClient = _createAndroidWebViewClient,
+    this.createFlutterAssetManager = _createFlutterAssetManager,
+    this.createJavaScriptChannel = _createJavaScriptChannel,
+    this.createDownloadListener = _createDownloadListener,
+  });
 
   /// Constructs a [android_webview.WebView].
   ///
@@ -35,7 +116,7 @@ class AndroidWebViewProxy {
   /// https://github.com/flutter/flutter/issues/108106
   final android_webview.WebView Function({
     @required bool useHybridComposition,
-  }) createAndroidWebView =   android_webview.WebView() as android_webview.WebView Function({bool useHybridComposition});
+  }) createAndroidWebView;
 
   /// Constructs a [android_webview.WebChromeClient].
   final android_webview.WebChromeClient Function({
@@ -46,15 +127,7 @@ class AndroidWebViewProxy {
       android_webview.FileChooserParams params,
     )
         onShowFileChooser,
-  }) createAndroidWebChromeClient = android_webview.WebChromeClient() as android_webview.WebChromeClient Function({
-    void Function(android_webview.WebView webView, int progress)
-        onProgressChanged,
-    Future<List<String>> Function(
-      android_webview.WebView webView,
-      android_webview.FileChooserParams params,
-    )
-        onShowFileChooser,
-  });
+  }) createAndroidWebChromeClient;
 
   /// Constructs a [android_webview.WebViewClient].
   final android_webview.WebViewClient Function({
@@ -80,68 +153,30 @@ class AndroidWebViewProxy {
     )
         requestLoading,
     void Function(android_webview.WebView webView, String url) urlLoading,
-  }) createAndroidWebViewClient = android_webview.WebViewClient()  as 
-   android_webview.WebViewClient Function({
-    void Function(android_webview.WebView webView, String url) onPageStarted,
-    void Function(android_webview.WebView webView, String url) onPageFinished,
-    void Function(
-      android_webview.WebView webView,
-      android_webview.WebResourceRequest request,
-      android_webview.WebResourceError error,
-    )
-        onReceivedRequestError,
-    @Deprecated('Only called on Android version < 23.')
-        void Function(
-      android_webview.WebView webView,
-      int errorCode,
-      String description,
-      String failingUrl,
-    )
-            onReceivedError,
-    void Function(
-      android_webview.WebView webView,
-      android_webview.WebResourceRequest request,
-    )
-        requestLoading,
-    void Function(android_webview.WebView webView, String url) urlLoading,
-  })
-  ;
+  }) createAndroidWebViewClient;
 
   /// Constructs a [android_webview.FlutterAssetManager].
   final android_webview.FlutterAssetManager Function()
-      createFlutterAssetManager = android_webview.FlutterAssetManager() as android_webview.FlutterAssetManager Function();
+      createFlutterAssetManager;
 
   /// Constructs a [android_webview.JavaScriptChannel].
   final android_webview.JavaScriptChannel Function(
     String channelName, {
     @required void Function(String) postMessage,
-  }) createJavaScriptChannel = android_webview.JavaScriptChannel('',postMessage:(m){} ) as android_webview.JavaScriptChannel Function(
-    String channelName, {
-    @required void Function(String) postMessage,
-  });
+  }) createJavaScriptChannel;
 
   /// Constructs a [android_webview.DownloadListener].
   final android_webview.DownloadListener Function({
-    @required void Function(
+    @required
+        void Function(
       String url,
       String userAgent,
       String contentDisposition,
       String mimetype,
       int contentLength,
     )
-        onDownloadStart,
-  }) createDownloadListener = android_webview.DownloadListener(
-    onDownloadStart: (s,s1,s2,s3,i){}
-  ) as android_webview.DownloadListener Function({
-    @required void Function(
-      String url,
-      String userAgent,
-      String contentDisposition,
-      String mimetype,
-      int contentLength,
-    )
-        onDownloadStart,
-  });
+            onDownloadStart,
+  }) createDownloadListener;
 
   /// Enables debugging of web contents (HTML / CSS / JavaScript) loaded into any WebViews of this application.
   ///

@@ -230,13 +230,13 @@
       "languageVersion": "2.7"
     },
     {
-      "name": "webview_flutter_android",
+      "name": "webview_flutter_wkwebview",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2023-07-11T12:09:24.349843Z",
+  "generated": "2023-07-11T12:14:47.237770Z",
   "generator": "pub",
   "generatorVersion": "2.10.2"
 }

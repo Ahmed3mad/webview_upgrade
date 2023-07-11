@@ -71,7 +71,7 @@ class WebViewAndroidWidget extends StatefulWidget {
 }
 
 class _WebViewAndroidWidgetState extends State<WebViewAndroidWidget> {
-   WebViewAndroidPlatformController controller;
+  WebViewAndroidPlatformController controller;
 
   @override
   void initState() {
@@ -133,16 +133,21 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
 
   final Map<String, WebViewAndroidJavaScriptChannel> _javaScriptChannels =
       <String, WebViewAndroidJavaScriptChannel>{};
+  
 
-  android_webview.WebViewClient _webViewClient = withWeakReferenceTo(
-      this, (WeakReference<WebViewAndroidPlatformController> weakReference) {
+  android_webview.WebViewClient  __webViewClient ; 
+
+
+  android_webview.WebViewClient get _webViewClient => __webViewClient??=  withWeakReferenceTo(this,
+      (WebViewAndroidPlatformController weakReference) {
+
 
     return webViewProxy.createWebViewClient(
       onPageStarted: (_, String url) {
-        weakReference.target?.callbacksHandler.onPageStarted(url);
+        weakReference?.callbacksHandler.onPageStarted(url);
       },
       onPageFinished: (_, String url) {
-        weakReference.target?.callbacksHandler.onPageFinished(url);
+        weakReference?.callbacksHandler.onPageFinished(url);
       },
       onReceivedError: (
         _,
@@ -150,7 +155,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
         String description,
         String failingUrl,
       ) {
-        weakReference.target?.callbacksHandler
+        weakReference?.callbacksHandler
             .onWebResourceError(WebResourceError(
           errorCode: errorCode,
           description: description,
@@ -164,7 +169,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
         android_webview.WebResourceError error,
       ) {
         if (request.isForMainFrame) {
-          weakReference.target?.callbacksHandler
+          weakReference?.callbacksHandler
               .onWebResourceError(WebResourceError(
             errorCode: error.errorCode,
             description: error.description,
@@ -174,13 +179,13 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
         }
       },
       urlLoading: (_, String url) {
-        weakReference.target?._handleNavigationRequest(
+        weakReference?._handleNavigationRequest(
           url: url,
           isForMainFrame: true,
         );
       },
       requestLoading: (_, android_webview.WebResourceRequest request) {
-        weakReference.target?._handleNavigationRequest(
+        weakReference?._handleNavigationRequest(
           url: request.url,
           isForMainFrame: request.isForMainFrame,
         );
@@ -192,7 +197,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   bool _hasProgressTracking = false;
 
   /// Represents the WebView maintained by platform code.
-   android_webview.WebView webView;
+  android_webview.WebView webView;
 
   /// Handles callbacks that are made by [android_webview.WebViewClient], [android_webview.DownloadListener], and [android_webview.WebChromeClient].
   final WebViewPlatformCallbacksHandler callbacksHandler;
@@ -211,12 +216,15 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   final android_webview.FlutterAssetManager flutterAssetManager;
 
   /// Receives callbacks when content should be downloaded instead.
+  android_webview.DownloadListener _downloadListener ;
+  
+
   @visibleForTesting
-  android_webview.DownloadListener downloadListener =
+  android_webview.DownloadListener get downloadListener => _downloadListener??=
       android_webview.DownloadListener(
     onDownloadStart: withWeakReferenceTo(
       this,
-      (WeakReference<WebViewAndroidPlatformController> weakReference) {
+      (WebViewAndroidPlatformController weakReference) {
         return (
           String url,
           String userAgent,
@@ -224,7 +232,7 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
           String mimetype,
           int contentLength,
         ) {
-          weakReference.target?._handleNavigationRequest(
+          weakReference?._handleNavigationRequest(
             url: url,
             isForMainFrame: true,
           );
@@ -234,15 +242,20 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
   );
 
   /// Handles JavaScript dialogs, favicons, titles, new windows, and the progress for [android_webview.WebView].
+  /// 
+  /// 
+  /// 
+  android_webview.WebChromeClient _webChromeClient ;
+
   @visibleForTesting
-  android_webview.WebChromeClient webChromeClient =
+  android_webview.WebChromeClient get webChromeClient => _webChromeClient??= 
       android_webview.WebChromeClient(
           onProgressChanged: withWeakReferenceTo(
     this,
-    (WeakReference<WebViewAndroidPlatformController> weakReference) {
+    (WebViewAndroidPlatformController weakReference) {
       return (_, int progress) {
         final WebViewAndroidPlatformController controller =
-            weakReference.target;
+            weakReference;
         if (controller != null && controller._hasProgressTracking) {
           controller.callbacksHandler.onProgress(progress);
         }
@@ -268,8 +281,8 @@ class WebViewAndroidPlatformController extends WebViewPlatformController {
 
   @override
   Future<void> loadFile(String absoluteFilePath) {
-    final String url = absoluteFilePath.startsWith('file://')?
-         absoluteFilePath
+    final String url = absoluteFilePath.startsWith('file://')
+        ? absoluteFilePath
         : 'file://$absoluteFilePath';
 
     webView.settings.setAllowFileAccess(true);
@@ -580,11 +593,12 @@ class WebViewAndroidJavaScriptChannel
     channelName,
     this.javascriptChannelRegistry,
   ) : super(
+          channelName,
           postMessage: withWeakReferenceTo(
             javascriptChannelRegistry,
-            (WeakReference<JavascriptChannelRegistry> weakReference) {
+            (JavascriptChannelRegistry weakReference) {
               return (String message) {
-                weakReference.target?.onJavascriptChannelMessage(
+                weakReference?.onJavascriptChannelMessage(
                   channelName,
                   message,
                 );

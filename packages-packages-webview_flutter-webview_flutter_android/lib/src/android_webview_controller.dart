@@ -10,6 +10,8 @@ import 'dart:async';
 // ignore: unnecessary_import
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +33,7 @@ class AndroidWebViewControllerCreationParams
     extends PlatformWebViewControllerCreationParams {
   /// Creates a new [AndroidWebViewControllerCreationParams] instance.
   AndroidWebViewControllerCreationParams({
-    // @visibleForTesting this.androidWebViewProxy =  AndroidWebViewProxy(),
+    @visibleForTesting this.androidWebViewProxy = const AndroidWebViewProxy(),
     @visibleForTesting android_webview.WebStorage androidWebStorage,
   })  : androidWebStorage =
             androidWebStorage ?? android_webview.WebStorage.instance,
@@ -43,10 +45,11 @@ class AndroidWebViewControllerCreationParams
     // ignore: avoid_unused_constructor_parameters
     PlatformWebViewControllerCreationParams params, {
     @visibleForTesting
-        // AndroidWebViewProxy androidWebViewProxy = AndroidWebViewProxy(),
+        AndroidWebViewProxy androidWebViewProxy = const AndroidWebViewProxy(),
     @visibleForTesting android_webview.WebStorage androidWebStorage,
   }) {
     return AndroidWebViewControllerCreationParams(
+      androidWebViewProxy: androidWebViewProxy,
       androidWebStorage:
           androidWebStorage ?? android_webview.WebStorage.instance,
     );
@@ -55,7 +58,7 @@ class AndroidWebViewControllerCreationParams
   /// Handles constructing objects and calling static methods for the Android WebView
   /// native library.
   @visibleForTesting
-  final AndroidWebViewProxy androidWebViewProxy = AndroidWebViewProxy();
+  final AndroidWebViewProxy androidWebViewProxy;
 
   /// Manages the JavaScript storage APIs provided by the [android_webview.WebView].
   @visibleForTesting
@@ -71,30 +74,30 @@ class AndroidWebViewController extends PlatformWebViewController {
             : AndroidWebViewControllerCreationParams
                 .fromPlatformWebViewControllerCreationParams(params)) {
     _webView = _androidWebViewParams.androidWebViewProxy.createAndroidWebView(
-        // Due to changes in Flutter 3.0 the `useHybridComposition` doesn't have
-        // any effect and is purposefully not exposed publicly by the
-        // [AndroidWebViewController]. More info here:
-        // https://github.com/flutter/flutter/issues/108106
-        // useHybridComposition: true,
-        );
+      // Due to changes in Flutter 3.0 the `useHybridComposition` doesn't have
+      // any effect and is purposefully not exposed publicly by the
+      // [AndroidWebViewController]. More info here:
+      // https://github.com/flutter/flutter/issues/108106
+      useHybridComposition: true,
+    );
     _webChromeClient =
         _androidWebViewParams.androidWebViewProxy.createAndroidWebChromeClient(
       onProgressChanged: withWeakReferenceTo(this,
-          (WeakReference<AndroidWebViewController> weakReference) {
+          (AndroidWebViewController weakReference) {
         return (android_webview.WebView webView, int progress) {
-          if (weakReference.target?._currentNavigationDelegate?._onProgress !=
+          if (weakReference?._currentNavigationDelegate?._onProgress !=
               null) {
-            weakReference.target._currentNavigationDelegate
+            weakReference._currentNavigationDelegate
                 ._onProgress(progress);
           }
         };
       }),
       onShowFileChooser: withWeakReferenceTo(this,
-          (WeakReference<AndroidWebViewController> weakReference) {
+          (AndroidWebViewController weakReference) {
         return (android_webview.WebView webView,
             android_webview.FileChooserParams params) async {
-          if (weakReference.target?._onShowFileSelectorCallback != null) {
-            return weakReference.target._onShowFileSelectorCallback(
+          if (weakReference?._onShowFileSelectorCallback != null) {
+            return weakReference._onShowFileSelectorCallback(
               FileSelectorParams._fromFileChooserParams(params),
             );
           }
@@ -102,8 +105,10 @@ class AndroidWebViewController extends PlatformWebViewController {
         };
       }),
     );
+
     _flutterAssetManager =
         _androidWebViewParams.androidWebViewProxy.createFlutterAssetManager();
+
     _webView.settings.setDomStorageEnabled(true);
     _webView.settings.setJavaScriptCanOpenWindowsAutomatically(true);
     _webView.settings.setSupportMultipleWindows(true);
@@ -111,6 +116,7 @@ class AndroidWebViewController extends PlatformWebViewController {
     _webView.settings.setUseWideViewPort(true);
     _webView.settings.setDisplayZoomControls(false);
     _webView.settings.setBuiltInZoomControls(true);
+
     _webView.setWebChromeClient(_webChromeClient);
   }
 
@@ -138,9 +144,9 @@ class AndroidWebViewController extends PlatformWebViewController {
   static Future<void> enableDebugging(
     bool enabled, {
     @visibleForTesting
-        // AndroidWebViewProxy webViewProxy =  AndroidWebViewProxy(),
+        AndroidWebViewProxy webViewProxy = const AndroidWebViewProxy(),
   }) {
-    // return webViewProxy.setWebContentsDebuggingEnabled(enabled);
+    return webViewProxy.setWebContentsDebuggingEnabled(enabled);
   }
 
   /// Identifier used to retrieve the underlying native `WKWebView`.
@@ -433,35 +439,36 @@ class FileSelectorParams {
 class AndroidJavaScriptChannelParams extends JavaScriptChannelParams {
   /// Constructs a [AndroidJavaScriptChannelParams].
   AndroidJavaScriptChannelParams({
-    @required name,
-    @required onMessageReceived,
+    @required String name,
+    @required void Function(JavaScriptMessage) onMessageReceived,
     @visibleForTesting
-        AndroidWebViewProxy webViewProxy =  AndroidWebViewProxy(),
+        AndroidWebViewProxy webViewProxy = const AndroidWebViewProxy(),
   })  : assert(name.isNotEmpty),
         _javaScriptChannel = webViewProxy.createJavaScriptChannel(
           name,
-          withWeakReferenceTo(
+          postMessage: withWeakReferenceTo(
             onMessageReceived,
-            (WeakReference<void Function(JavaScriptMessage)> weakReference) {
+            (void Function(JavaScriptMessage) weakReference) {
               return (
                 String message,
               ) {
-                if (weakReference.target != null) {
-                  weakReference.target(
+                if (weakReference != null) {
+                  weakReference(
                     JavaScriptMessage(message: message),
                   );
                 }
               };
             },
           ),
-        );
+        ),
+        super(name: name, onMessageReceived: onMessageReceived);
 
   /// Constructs a [AndroidJavaScriptChannelParams] using a
   /// [JavaScriptChannelParams].
   AndroidJavaScriptChannelParams.fromJavaScriptChannelParams(
     JavaScriptChannelParams params, {
     @visibleForTesting
-        AndroidWebViewProxy webViewProxy =  AndroidWebViewProxy(),
+        AndroidWebViewProxy webViewProxy = const AndroidWebViewProxy(),
   }) : this(
           name: params.name,
           onMessageReceived: params.onMessageReceived,
@@ -481,16 +488,22 @@ class AndroidWebViewWidgetCreationParams
     extends PlatformWebViewWidgetCreationParams {
   /// Creates [AndroidWebWidgetCreationParams].
   AndroidWebViewWidgetCreationParams({
-    key,
-    @required controller,
-    layoutDirection,
-    gestureRecognizers,
+    Key key,
+    @required PlatformWebViewController controller,
+    TextDirection layoutDirection,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     this.displayWithHybridComposition = false,
-    @visibleForTesting InstanceManager? instanceManager,
+    @visibleForTesting InstanceManager instanceManager,
     @visibleForTesting
         this.platformViewsServiceProxy = const PlatformViewsServiceProxy(),
-  }) : instanceManager =
-            instanceManager ?? android_webview.JavaObject.globalInstanceManager;
+  })  : instanceManager =
+            instanceManager ?? android_webview.JavaObject.globalInstanceManager,
+        super(
+          key: key,
+          controller: controller,
+          layoutDirection: layoutDirection,
+          gestureRecognizers: gestureRecognizers,
+        );
 
   /// Constructs a [WebKitWebViewWidgetCreationParams] using a
   /// [PlatformWebViewWidgetCreationParams].
@@ -515,6 +528,7 @@ class AndroidWebViewWidgetCreationParams
   ///
   /// This field is exposed for testing purposes only and should not be used
   /// outside of tests.
+
   @visibleForTesting
   final InstanceManager instanceManager;
 
@@ -614,18 +628,19 @@ typedef LoadRequestCallback = Future<void> Function(LoadRequestParams params);
 class AndroidWebResourceError extends WebResourceError {
   /// Creates a new [AndroidWebResourceError].
   AndroidWebResourceError._({
-    @required errorCode,
-    @required description,
-    isForMainFrame,
+    @required int errorCode,
+    @required String description,
+    bool isForMainFrame,
     this.failingUrl,
   }) : super(
+          isForMainFrame: isForMainFrame,
           errorCode: errorCode,
           description: description,
           errorType: _errorCodeToErrorType(errorCode),
         );
 
   /// Gets the URL for which the failing resource request was made.
-  String failingUrl;
+  final String failingUrl;
 
   static WebResourceErrorType _errorCodeToErrorType(int errorCode) {
     switch (errorCode) {
@@ -710,20 +725,19 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
             ? params
             : AndroidNavigationDelegateCreationParams
                 .fromPlatformNavigationDelegateCreationParams(params)) {
-    final WeakReference<AndroidNavigationDelegate> weakThis =
-        WeakReference<AndroidNavigationDelegate>(this);
+    final weakThis = (this);
 
     _webViewClient = (this.params as AndroidNavigationDelegateCreationParams)
         .androidWebViewProxy
         .createAndroidWebViewClient(
       onPageFinished: (android_webview.WebView webView, String url) {
-        if (weakThis.target?._onPageFinished = null) {
-          weakThis.target._onPageFinished(url);
+        if (weakThis._onPageFinished != null) {
+          weakThis._onPageFinished(url);
         }
       },
       onPageStarted: (android_webview.WebView webView, String url) {
-        if (weakThis.target?._onPageStarted != null) {
-          weakThis.target._onPageStarted(url);
+        if (weakThis._onPageStarted != null) {
+          weakThis._onPageStarted(url);
         }
       },
       onReceivedRequestError: (
@@ -731,8 +745,8 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
         android_webview.WebResourceRequest request,
         android_webview.WebResourceError error,
       ) {
-        if (weakThis.target?._onWebResourceError != null) {
-          weakThis.target._onWebResourceError(AndroidWebResourceError._(
+        if (weakThis._onWebResourceError != null) {
+          weakThis._onWebResourceError(AndroidWebResourceError._(
             errorCode: error.errorCode,
             description: error.description,
             failingUrl: request.url,
@@ -746,8 +760,8 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
         String description,
         String failingUrl,
       ) {
-        if (weakThis.target?._onWebResourceError != null) {
-          weakThis.target._onWebResourceError(AndroidWebResourceError._(
+        if (weakThis._onWebResourceError != null) {
+          weakThis._onWebResourceError(AndroidWebResourceError._(
             errorCode: errorCode,
             description: description,
             failingUrl: failingUrl,
@@ -759,8 +773,8 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
         android_webview.WebView webView,
         android_webview.WebResourceRequest request,
       ) {
-        if (weakThis.target != null) {
-          weakThis.target._handleNavigation(
+        if (weakThis != null) {
+          weakThis._handleNavigation(
             request.url,
             headers: request.requestHeaders,
             isForMainFrame: request.isForMainFrame,
@@ -771,8 +785,8 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
         android_webview.WebView webView,
         String url,
       ) {
-        if (weakThis.target != null) {
-          weakThis.target._handleNavigation(url, isForMainFrame: true);
+        if (weakThis != null) {
+          weakThis._handleNavigation(url, isForMainFrame: true);
         }
       },
     );
@@ -787,18 +801,20 @@ class AndroidNavigationDelegate extends PlatformNavigationDelegate {
         String mimetype,
         int contentLength,
       ) {
-        if (weakThis.target != null) {
-          weakThis.target?._handleNavigation(url, isForMainFrame: true);
+        if (weakThis != null) {
+          weakThis?._handleNavigation(url, isForMainFrame: true);
         }
       },
     );
+
+    _webChromeClient =
+        _androidParams.androidWebViewProxy.createAndroidWebChromeClient();
   }
 
   AndroidNavigationDelegateCreationParams get _androidParams =>
       params as AndroidNavigationDelegateCreationParams;
 
-  android_webview.WebChromeClient _webChromeClient =
-      _androidParams.androidWebViewProxy.createAndroidWebChromeClient();
+  android_webview.WebChromeClient _webChromeClient;
 
   /// Gets the native [android_webview.WebChromeClient] that is bridged by this [AndroidNavigationDelegate].
   ///

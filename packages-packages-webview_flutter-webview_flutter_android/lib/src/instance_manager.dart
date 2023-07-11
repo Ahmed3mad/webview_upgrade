@@ -66,9 +66,9 @@ class InstanceManager {
   // by calling instanceManager.getIdentifier() inside of `==` while this was a
   // HashMap).
   final Expando<int> _identifiers = Expando<int>();
-  // final Map<int, WeakReference<Copyable>> _weakInstances =
-  //     <int, WeakReference<Copyable>>{};
-  // final Map<int, Copyable> _strongInstances = <int, Copyable>{};
+  final Map<int, Copyable> _weakInstances =
+      <int, Copyable>{};
+  final Map<int, Copyable> _strongInstances = <int, Copyable>{};
   // Finalizer<int> _finalizer;
   int _nextIdentifier = 0;
 
@@ -123,7 +123,7 @@ class InstanceManager {
   /// This does not remove the the weak referenced instance associtated with
   /// [identifier]. This can be done with [removeWeakReference].
   T remove<T extends Copyable>(int identifier) {
-    // return _strongInstances.remove(identifier) as T;
+    return _strongInstances.remove(identifier) as T;
   }
 
   /// Retrieves the instance associated with identifier.
@@ -139,21 +139,21 @@ class InstanceManager {
   /// This method also expects the host `InstanceManager` to have a strong
   /// reference to the instance the identifier is associated with.
   T getInstanceWithWeakReference<T extends Copyable>(int identifier) {
-    // final Copyable weakInstance = _weakInstances[identifier]?.target;
+    final Copyable weakInstance = _weakInstances[identifier];
 
-    // if (weakInstance == null) {
-    //   final Copyable strongInstance = _strongInstances[identifier];
-    //   if (strongInstance != null) {
-    //     final Copyable copy = strongInstance.copy();
-    //     _identifiers[copy] = identifier;
-    //     _weakInstances[identifier] = WeakReference<Copyable>(copy);
-    //     _finalizer.attach(copy, identifier, detach: copy);
-    //     return copy as T;
-    //   }
-    //   return strongInstance as T;
-    // }
+    if (weakInstance == null) {
+      final Copyable strongInstance = _strongInstances[identifier];
+      if (strongInstance != null) {
+        final Copyable copy = strongInstance.copy();
+        _identifiers[copy] = identifier;
+        _weakInstances[identifier] = copy;
+        // _finalizer.attach(copy, identifier, detach: copy);
+        return copy as T;
+      }
+      return strongInstance as T;
+    }
 
-    // return weakInstance as T;
+    return weakInstance as T;
   }
 
   /// Retrieves the identifier associated with instance.
@@ -178,19 +178,19 @@ class InstanceManager {
   }
 
   void _addInstanceWithIdentifier(Copyable instance, int identifier) {
-    // _identifiers[instance] = identifier;
-    // _weakInstances[identifier] = WeakReference<Copyable>(instance);
+    _identifiers[instance] = identifier;
+    _weakInstances[identifier] = instance;
     // _finalizer.attach(instance, identifier, detach: instance);
 
-    // final Copyable copy = instance.copy();
-    // _identifiers[copy] = identifier;
-    // _strongInstances[identifier] = copy;
+    final Copyable copy = instance.copy();
+    _identifiers[copy] = identifier;
+    _strongInstances[identifier] = copy;
   }
 
   /// Whether this manager contains the given [identifier].
   bool containsIdentifier(int identifier) {
-    // return _weakInstances.containsKey(identifier) ||
-    //     _strongInstances.containsKey(identifier);
+    return _weakInstances.containsKey(identifier) ||
+        _strongInstances.containsKey(identifier);
   }
 
   int _nextUniqueIdentifier() {
