@@ -113,7 +113,7 @@ class WebViewController {
   ///
   /// The [baseUrl] parameter is used when resolving relative URLs within the
   /// HTML string.
-  Future<void> loadHtmlString(String html, {String? baseUrl}) {
+  Future<void> loadHtmlString(String html, {String baseUrl}) {
     assert(html.isNotEmpty);
     return platform.loadHtmlString(html, baseUrl: baseUrl);
   }
@@ -132,7 +132,7 @@ class WebViewController {
     Uri uri, {
     LoadRequestMethod method = LoadRequestMethod.get,
     Map<String, String> headers = const <String, String>{},
-    Uint8List? body,
+    Uint8List body,
   }) {
     if (uri.scheme.isEmpty) {
       throw ArgumentError('Missing scheme in uri: $uri');
@@ -148,7 +148,7 @@ class WebViewController {
   /// Returns the current URL that the WebView is displaying.
   ///
   /// If no URL was ever loaded, returns `null`.
-  Future<String?> currentUrl() {
+  Future<String> currentUrl() {
     return platform.currentUrl();
   }
 
@@ -253,7 +253,7 @@ class WebViewController {
   /// A channel [name] cannot be the same for multiple channels.
   Future<void> addJavaScriptChannel(
     String name, {
-    required void Function(JavaScriptMessage) onMessageReceived,
+    @required void Function(JavaScriptMessage) onMessageReceived,
   }) {
     assert(name.isNotEmpty);
     return platform.addJavaScriptChannel(JavaScriptChannelParams(
@@ -272,7 +272,7 @@ class WebViewController {
   }
 
   /// The title of the currently loaded page.
-  Future<String?> getTitle() {
+  Future<String> getTitle() {
     return platform.getTitle();
   }
 
@@ -315,7 +315,7 @@ class WebViewController {
   }
 
   /// Sets the value used for the HTTP `User-Agent:` request header.
-  Future<void> setUserAgent(String? userAgent) {
+  Future<void> setUserAgent(String userAgent) {
     return platform.setUserAgent(userAgent);
   }
 }

@@ -40,8 +40,8 @@ class WebViewWidget extends StatelessWidget {
   /// See [WebViewWidget.fromPlatformCreationParams] for setting parameters for
   /// a specific platform.
   WebViewWidget({
-    Key? key,
-    required WebViewController controller,
+    Key key,
+    @required WebViewController controller,
     TextDirection layoutDirection = TextDirection.ltr,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers =
         const <Factory<OneSequenceGestureRecognizer>>{},
@@ -89,18 +89,22 @@ class WebViewWidget extends StatelessWidget {
   /// ```
   /// {@endtemplate}
   WebViewWidget.fromPlatformCreationParams({
-    Key? key,
-    required PlatformWebViewWidgetCreationParams params,
+    Key key,
+    @required PlatformWebViewWidgetCreationParams params,
   }) : this.fromPlatform(key: key, platform: PlatformWebViewWidget(params));
 
   /// Constructs a [WebViewWidget] from a specific platform implementation.
-  WebViewWidget.fromPlatform({super.key, required this.platform});
+  WebViewWidget.fromPlatform({Key key, @required this.platform});
 
   /// Implementation of [PlatformWebViewWidget] for the current platform.
   final PlatformWebViewWidget platform;
 
   /// The layout direction to use for the embedded WebView.
-  late final TextDirection layoutDirection = platform.params.layoutDirection;
+
+  TextDirection _layoutDirection;
+
+  TextDirection get layoutDirection =>
+      _layoutDirection ??= platform.params.layoutDirection;
 
   /// Specifies which gestures should be consumed by the web view.
   ///
@@ -112,8 +116,10 @@ class WebViewWidget extends StatelessWidget {
   /// When `gestureRecognizers` is empty (default), the web view will only
   /// handle pointer events for gestures that were not claimed by any other
   /// gesture recognizer.
-  late final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers =
-      platform.params.gestureRecognizers;
+  ///
+  Set<Factory<OneSequenceGestureRecognizer>> _gestureRecognizers;
+  Set<Factory<OneSequenceGestureRecognizer>> get gestureRecognizers =>
+      _gestureRecognizers ??= platform.params.gestureRecognizers;
 
   @override
   Widget build(BuildContext context) {

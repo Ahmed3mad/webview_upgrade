@@ -37,12 +37,12 @@ import 'webview_controller.dart';
 class NavigationDelegate {
   /// Constructs a [NavigationDelegate].
   NavigationDelegate({
-    FutureOr<NavigationDecision> Function(NavigationRequest request)?
+    FutureOr<NavigationDecision> Function(NavigationRequest request)
         onNavigationRequest,
-    void Function(String url)? onPageStarted,
-    void Function(String url)? onPageFinished,
-    void Function(int progress)? onProgress,
-    void Function(WebResourceError error)? onWebResourceError,
+    void Function(String url) onPageStarted,
+    void Function(String url) onPageFinished,
+    void Function(int progress) onProgress,
+    void Function(WebResourceError error) onWebResourceError,
   }) : this.fromPlatformCreationParams(
           const PlatformNavigationDelegateCreationParams(),
           onNavigationRequest: onNavigationRequest,
@@ -83,12 +83,12 @@ class NavigationDelegate {
   /// {@endtemplate}
   NavigationDelegate.fromPlatformCreationParams(
     PlatformNavigationDelegateCreationParams params, {
-    FutureOr<NavigationDecision> Function(NavigationRequest request)?
+    FutureOr<NavigationDecision> Function(NavigationRequest request)
         onNavigationRequest,
-    void Function(String url)? onPageStarted,
-    void Function(String url)? onPageFinished,
-    void Function(int progress)? onProgress,
-    void Function(WebResourceError error)? onWebResourceError,
+    void Function(String url) onPageStarted,
+    void Function(String url) onPageFinished,
+    void Function(int progress) onProgress,
+    void Function(WebResourceError error) onWebResourceError,
   }) : this.fromPlatform(
           PlatformNavigationDelegate(params),
           onNavigationRequest: onNavigationRequest,
@@ -108,19 +108,19 @@ class NavigationDelegate {
     this.onWebResourceError,
   }) {
     if (onNavigationRequest != null) {
-      platform.setOnNavigationRequest(onNavigationRequest!);
+      platform.setOnNavigationRequest(onNavigationRequest);
     }
     if (onPageStarted != null) {
-      platform.setOnPageStarted(onPageStarted!);
+      platform.setOnPageStarted(onPageStarted);
     }
     if (onPageFinished != null) {
-      platform.setOnPageFinished(onPageFinished!);
+      platform.setOnPageFinished(onPageFinished);
     }
     if (onProgress != null) {
-      platform.setOnProgress(onProgress!);
+      platform.setOnProgress(onProgress);
     }
     if (onWebResourceError != null) {
-      platform.setOnWebResourceError(onWebResourceError!);
+      platform.setOnWebResourceError(onWebResourceError);
     }
   }
 
@@ -137,17 +137,17 @@ class NavigationDelegate {
   /// [WebViewController.loadRequest].
   ///
   /// See [NavigationDecision].
-  final NavigationRequestCallback? onNavigationRequest;
+  final NavigationRequestCallback onNavigationRequest;
 
   /// Invoked when a page has started loading.
-  final PageEventCallback? onPageStarted;
+  final PageEventCallback onPageStarted;
 
   /// Invoked when a page has finished loading.
-  final PageEventCallback? onPageFinished;
+  final PageEventCallback onPageFinished;
 
   /// Invoked when a page is loading to report the progress.
-  final ProgressCallback? onProgress;
+  final ProgressCallback onProgress;
 
   /// Invoked when a resource loading error occurred.
-  final WebResourceErrorCallback? onWebResourceError;
+  final WebResourceErrorCallback onWebResourceError;
 }
