@@ -68,13 +68,13 @@
       "languageVersion": "2.7"
     },
     {
-      "name": "webview_flutter",
+      "name": "custom_webview_flutter",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2023-07-13T09:51:10.706470Z",
+  "generated": "2023-07-13T10:01:00.176873Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }
