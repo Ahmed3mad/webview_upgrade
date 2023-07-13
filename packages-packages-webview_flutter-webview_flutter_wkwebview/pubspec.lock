@@ -143,7 +143,7 @@ packages:
   plugin_platform_interface:
     dependency: transitive
     description:
-      path: "../plugins-packages-plugin_platform_interface"
+      path: "../../../AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/plugins-packages-plugin_platform_interface"
       relative: true
     source: path
     version: "2.1.0"
@@ -253,9 +253,11 @@ packages:
   webview_flutter_platform_interface:
     dependency: "direct main"
     description:
-      path: "../packages-packages-webview_flutter-webview_flutter_platform_interface"
-      relative: true
-    source: path
+      path: packages-packages-webview_flutter-webview_flutter_platform_interface
+      ref: main
+      resolved-ref: be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c
+      url: "https://github.com/Ahmed3mad/webview_upgrade"
+    source: git
     version: "2.0.2"
 sdks:
   dart: ">=2.10.0-110 <2.11.0"

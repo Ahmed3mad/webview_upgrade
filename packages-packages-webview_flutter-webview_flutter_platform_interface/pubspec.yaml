@@ -13,4 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface:
-    path: ../plugins-packages-plugin_platform_interface
+    git:
+      url: https://github.com/Ahmed3mad/webview_upgrade
+      path: plugins-packages-plugin_platform_interface
+      ref: main

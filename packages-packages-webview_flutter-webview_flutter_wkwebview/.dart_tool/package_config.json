@@ -129,7 +129,7 @@
     },
     {
       "name": "plugin_platform_interface",
-      "rootUri": "../../plugins-packages-plugin_platform_interface",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/plugins-packages-plugin_platform_interface",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -225,7 +225,7 @@
     },
     {
       "name": "webview_flutter_platform_interface",
-      "rootUri": "../../packages-packages-webview_flutter-webview_flutter_platform_interface",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/packages-packages-webview_flutter-webview_flutter_platform_interface",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -236,7 +236,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2023-07-13T09:29:49.571167Z",
+  "generated": "2023-07-13T09:41:57.367945Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }
