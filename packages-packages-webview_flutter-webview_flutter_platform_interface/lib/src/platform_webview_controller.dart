@@ -4,7 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:custom_plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'platform_navigation_delegate.dart';
 import 'webview_platform.dart';
