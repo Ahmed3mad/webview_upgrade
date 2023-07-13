@@ -15,6 +15,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.3"
+  custom_plugin_platform_interface:
+    dependency: "direct main"
+    description:
+      path: plugins-packages-plugin_platform_interface
+      ref: main
+      resolved-ref: e56019f05b73c4ae8802f86777eb909b150e7dc2
+      url: "https://github.com/Ahmed3mad/webview_upgrade"
+    source: git
+    version: "2.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -27,15 +36,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0-nullsafety.3"
-  plugin_platform_interface:
-    dependency: "direct main"
-    description:
-      path: plugins-packages-plugin_platform_interface
-      ref: main
-      resolved-ref: be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c
-      url: "https://github.com/Ahmed3mad/webview_upgrade"
-    source: git
-    version: "2.1.0"
   sky_engine:
     dependency: transitive
     description: flutter

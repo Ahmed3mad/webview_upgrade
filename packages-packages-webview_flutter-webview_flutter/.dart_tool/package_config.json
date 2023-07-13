@@ -14,6 +14,12 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "custom_plugin_platform_interface",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/plugins-packages-plugin_platform_interface",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///C:/Users/user/fvm/versions/1.22.6/packages/flutter",
       "packageUri": "lib/",
@@ -24,12 +30,6 @@
       "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/meta-1.3.0-nullsafety.3",
       "packageUri": "lib/",
       "languageVersion": "2.10"
-    },
-    {
-      "name": "plugin_platform_interface",
-      "rootUri": "../../plugins-packages-plugin_platform_interface",
-      "packageUri": "lib/",
-      "languageVersion": "2.7"
     },
     {
       "name": "sky_engine",
@@ -51,19 +51,19 @@
     },
     {
       "name": "webview_flutter_android",
-      "rootUri": "../../packages-packages-webview_flutter-webview_flutter_android",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_android",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
     {
       "name": "webview_flutter_platform_interface",
-      "rootUri": "../../packages-packages-webview_flutter-webview_flutter_platform_interface",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_platform_interface",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "../../packages-packages-webview_flutter-webview_flutter_wkwebview",
+      "rootUri": "file:///C:/Users/user/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_wkwebview",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -74,7 +74,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2023-07-13T09:30:20.600630Z",
+  "generated": "2023-07-13T09:51:10.706470Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }
