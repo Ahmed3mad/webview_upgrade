@@ -23,12 +23,7 @@ class PlatformViewsServiceProxy {
     VoidCallback onFocus,
   }) {
     return PlatformViewsService.initSurfaceAndroidView(
-      id: id,
-      viewType: viewType,
-      layoutDirection: layoutDirection,
-      creationParams: creationParams,
-      creationParamsCodec: creationParamsCodec,
-      onFocus: onFocus,
+      int: id,
     );
   }
 
@@ -42,12 +37,7 @@ class PlatformViewsServiceProxy {
     VoidCallback onFocus,
   }) {
     return PlatformViewsService.initSurfaceAndroidView(
-      id: id,
-      viewType: viewType,
-      layoutDirection: layoutDirection,
-      creationParams: creationParams,
-      creationParamsCodec: creationParamsCodec,
-      onFocus: onFocus,
+      int: id,
     );
   }
 }
