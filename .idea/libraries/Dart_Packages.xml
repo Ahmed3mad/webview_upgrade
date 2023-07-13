@@ -72,6 +72,13 @@
             </list>
           </value>
         </entry>
+        <entry key="custom_plugin_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/plugins-packages-plugin_platform_interface/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="fake_async">
           <value>
             <list>
@@ -261,10 +268,25 @@
             </list>
           </value>
         </entry>
+        <entry key="webview_flutter_android">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_android/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="webview_flutter_platform_interface">
           <value>
             <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_platform_interface/lib" />
               <option value="$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/packages-packages-webview_flutter-webview_flutter_platform_interface/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="webview_flutter_wkwebview">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_wkwebview/lib" />
             </list>
           </value>
         </entry>
@@ -273,6 +295,10 @@
     <CLASSES>
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/packages-packages-webview_flutter-webview_flutter_platform_interface/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-be8ff51134d4a4739f105c13c4dcc8bc50e3aa4c/plugins-packages-plugin_platform_interface/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_android/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_platform_interface/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/packages-packages-webview_flutter-webview_flutter_wkwebview/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/git/webview_upgrade-e56019f05b73c4ae8802f86777eb909b150e7dc2/plugins-packages-plugin_platform_interface/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/archive-2.0.13/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/args-1.6.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/async-2.5.0-nullsafety.1/lib" />
