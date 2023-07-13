@@ -12,7 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface:
+  custom_plugin_platform_interface:
     git:
       url: https://github.com/Ahmed3mad/webview_upgrade
       path: plugins-packages-plugin_platform_interface
