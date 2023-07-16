@@ -23,8 +23,7 @@ class PlatformViewsServiceProxy {
     VoidCallback onFocus,
   }) {
     return PlatformViewsService.initSurfaceAndroidView(
-      int: id,
-    );
+        id: id, layoutDirection: layoutDirection, viewType: viewType);
   }
 
   /// Proxy method for [PlatformViewsService.initSurfaceAndroidView].
@@ -37,7 +36,6 @@ class PlatformViewsServiceProxy {
     VoidCallback onFocus,
   }) {
     return PlatformViewsService.initSurfaceAndroidView(
-      int: id,
-    );
+        id: id, layoutDirection: layoutDirection, viewType: viewType);
   }
 }
