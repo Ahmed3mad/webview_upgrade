@@ -24,9 +24,11 @@ dependencies:
       url: https://github.com/Ahmed3mad/webview_upgrade
       path: packages-packages-webview_flutter-webview_flutter_platform_interface
       ref: main
+  pigeon: ^0.1.23
 
 dev_dependencies:
   flutter_driver:
     sdk: flutter
   flutter_test:
     sdk: flutter
+
