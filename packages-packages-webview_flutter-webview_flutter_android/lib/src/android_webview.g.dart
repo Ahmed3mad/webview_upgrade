@@ -7,8 +7,7 @@
 import 'dart:async';
 import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
-import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer, required;
 import 'package:flutter/services.dart';
 
 /// Mode of how to select files for a file chooser.
@@ -48,7 +47,7 @@ class FileChooserModeEnumData {
   static FileChooserModeEnumData decode(Object result) {
     result as List<Object>;
     return FileChooserModeEnumData(
-      value: FileChooserMode.values[(result as List<Object>)[0] as int],
+      value: FileChooserMode.values[(result as List<Object>)[0]  as int],
     );
   }
 }
@@ -89,7 +88,7 @@ class WebResourceRequestData {
   static WebResourceRequestData decode(Object result) {
     result as List<Object>;
     return WebResourceRequestData(
-      url: (result as List<Object>) [0] as String,
+      url: (result as List<Object>)[0] as String,
       isForMainFrame: (result as List<Object>)[1] as bool,
       isRedirect: (result as List<Object>)[2] as bool,
       hasGesture: (result as List<Object>)[3] as bool,
